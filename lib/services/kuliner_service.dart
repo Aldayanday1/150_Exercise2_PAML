@@ -54,4 +54,13 @@ class class KulinerService {
     var streamedResponse = await request.send();
     return await http.Response.fromStream(streamedResponse);
   }
+
+  Future<http.Response> deleteKuliner(int id) async {
+    return await http.delete(
+      getUri('delete/$id'),
+      headers: {
+        "Accept": "application/json",
+      },
+    );
+  }
 }
