@@ -30,6 +30,13 @@ class _FormKulinerState extends State<FormKuliner> {
     });
   }
 
+  String? _validateText(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Kolom ini tidak boleh kosong';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold();
