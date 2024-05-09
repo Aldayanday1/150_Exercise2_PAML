@@ -137,7 +137,7 @@ class _DetailViewState extends State<DetailView> {
             ),
             FloatingActionButton(
               backgroundColor:
-                  Color.fromARGB(255, 255, 255, 255).withOpacity(0.8),
+                  Color.fromARGB(255, 255, 250, 250).withOpacity(0.8),
               onPressed: () {
                 Navigator.push(
                   context,

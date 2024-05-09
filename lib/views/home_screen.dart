@@ -29,7 +29,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 61, 61, 61),
+      backgroundColor: Color.fromARGB(255, 58, 58, 58),
       appBar: AppBar(
         title: Text("Kuliner Jogja", style: GoogleFonts.openSans()),
         toolbarHeight: 80,
