@@ -41,10 +41,23 @@ class _FormKulinerState extends State<FormKuliner> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color.fromARGB(255, 61, 61, 61),
-        appBar: AppBar(
-          title: Text("Form Kuliner", style: GoogleFonts.openSans()),
-          centerTitle: true,
-        ));
+      backgroundColor: const Color.fromARGB(255, 61, 61, 61),
+      appBar: AppBar(
+        title: Text("Form Kuliner", style: GoogleFonts.openSans()),
+        centerTitle: true,
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Nama",
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
