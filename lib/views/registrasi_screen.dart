@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:kulinerjogja/views/map_screen.dart';
 
 class FormKuliner extends StatefulWidget {
   const FormKuliner({super.key});
@@ -86,6 +87,79 @@ class _FormKulinerState extends State<FormKuliner> {
             ),
             controller: _deskripsi,
             validator: _validateText,
+          ),
+          SizedBox(height: 16),
+          Text(
+            "Alamat",
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 8),
+          Card(
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            color: Color.fromARGB(255, 243, 243, 243),
+            child: Padding(
+              padding: const EdgeInsets.all(12), // Reduced padding here
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _alamat == null
+                      ? Text(
+                          'Alamat kosong !',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 219, 0, 0),
+                          ),
+                        )
+                      : Text(_alamat!),
+                  SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        onPressed: () async {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MapScreen(
+                                onLocationSelected: (selectedAddress) {
+                                  setState(() {
+                                    _alamat = selectedAddress;
+                                  });
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                        child: Text('Pilih Alamat'),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MapScreen(
+                                onLocationSelected: (selectedAddress) {
+                                  setState(() {
+                                    _alamat = selectedAddress;
+                                  });
+                                },
+                              ),
+                            ),
+                          );
+                          setState(() {});
+                        },
+                        child: Text('Ubah Alamat'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
