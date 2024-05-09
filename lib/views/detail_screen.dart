@@ -22,35 +22,44 @@ class _DetailViewState extends State<DetailView> {
       appBar: AppBar(
         title: Text("Detail Kuliner"),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            widget.kuliner.nama,
-            style: GoogleFonts.roboto(
-              fontSize: 45.0,
-              color: Color.fromARGB(255, 66, 66, 66),
-              fontWeight: FontWeight.bold,
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Card(
+          color: Color.fromARGB(255, 255, 252, 244),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.kuliner.nama,
+                  style: GoogleFonts.roboto(
+                    fontSize: 45.0,
+                    color: Color.fromARGB(255, 66, 66, 66),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 30),
+                Text(
+                  widget.kuliner.alamat,
+                  style: GoogleFonts.roboto(
+                    fontSize: 14.0,
+                    color: Color.fromARGB(255, 66, 66, 66),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  widget.kuliner.deskripsi,
+                  style: GoogleFonts.roboto(
+                    fontSize: 14.0,
+                    color: Color.fromARGB(255, 66, 66, 66),
+                  ),
+                ),
+                SizedBox(height: 10),
+              ],
             ),
           ),
-          SizedBox(height: 30),
-          Text(
-            widget.kuliner.alamat,
-            style: GoogleFonts.roboto(
-              fontSize: 14.0,
-              color: Color.fromARGB(255, 66, 66, 66),
-            ),
-          ),
-          SizedBox(height: 10),
-          Text(
-            widget.kuliner.deskripsi,
-            style: GoogleFonts.roboto(
-              fontSize: 14.0,
-              color: Color.fromARGB(255, 66, 66, 66),
-            ),
-          ),
-          SizedBox(height: 10),
-        ],
+        ),
       ),
     );
   }
