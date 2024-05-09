@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kulinerjogja/controllers/kuliner_controller.dart';
 import 'package:kulinerjogja/model/kuliner.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:kulinerjogja/views/edit_screen.dart';
 import 'package:kulinerjogja/views/home_screen.dart';
 
 class DetailView extends StatefulWidget {
@@ -133,6 +134,20 @@ class _DetailViewState extends State<DetailView> {
             ),
             SizedBox(
               width: 20,
+            ),
+            FloatingActionButton(
+              backgroundColor:
+                  Color.fromARGB(255, 255, 255, 255).withOpacity(0.8),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditKuliner(),
+                    settings: RouteSettings(arguments: widget.kuliner),
+                  ),
+                );
+              },
+              child: Icon(Icons.edit),
             ),
           ],
         ),
