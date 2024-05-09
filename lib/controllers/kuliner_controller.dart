@@ -91,4 +91,8 @@ class KulinerController {
       };
     }
   }
+
+  Future<Map<String, dynamic>> deleteKuliner(int id) {
+    
+  }
 }
