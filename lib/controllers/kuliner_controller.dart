@@ -41,5 +41,11 @@ class KulinerController {
   }
 
   Future<List<Kuliner>> getAllKuliner() async {
-    
+    try {
+      List<dynamic> kulinerData = await kulinerService.fetchKuliner();
+    } catch (e) {
+      print('Error in getAllKuliner: $e');
+      throw Exception('Failed to get All kuliner');
+    }
+  }
 }
