@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kulinerjogja/views/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,6 +17,9 @@ class MyApp extends StatelessWidget {
           seedColor: Colors.blueGrey,
         ),
         useMaterial3: true,
+      ),
+      home: Scaffold(
+        body: HomeView(),
       ),
     );
   }
