@@ -30,5 +30,11 @@ class class KulinerService {
         HttpHeaders.acceptHeader: "application/json",
       },
     );
+    if (response.statusCode == 200) {
+      final List<dynamic> decodedResponse = json.decode(response.body);
+      return decodedResponse;
+    } else {
+      throw Exception('Failed to load kuliner: ${response.reasonPhrase}');
+    }
   }
 }
