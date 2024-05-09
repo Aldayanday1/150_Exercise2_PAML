@@ -56,6 +56,17 @@ class _FormKulinerState extends State<FormKuliner> {
               fontWeight: FontWeight.bold,
             ),
           ),
+          SizedBox(height: 8),
+          TextFormField(
+            decoration: InputDecoration(
+              hintText: "Masukkan Nama",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            controller: _nama,
+            validator: _validateText,
+          ),
         ],
       ),
     );
