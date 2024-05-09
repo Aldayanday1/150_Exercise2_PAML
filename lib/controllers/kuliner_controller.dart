@@ -66,5 +66,29 @@ class KulinerController {
       'alamat': kuliner.alamat,
       'deskripsi': kuliner.deskripsi
     };
+
+    try {
+      var response = await kulinerService.updateKuliner(kuliner.id, data, file);
+
+      if (response.statusCode == 200) {
+        return {
+          'success': true,
+          'message':
+              response.body, // Menggunakan pesan yang diberikan oleh server
+        };
+      } else {
+        // Jika status code lain, tampilkan pesan kesalahan default
+        return {
+          'success': false,
+          'message': 'Terjadi kesalahan saat memperbarui data',
+        };
+      }
+    } catch (e) {
+      // Menangkap kesalahan jaringan atau saat decoding JSON
+      return {
+        'success': false,
+        'message': 'Terjadi kesalahan: $e',
+      };
+    }
   }
 }
