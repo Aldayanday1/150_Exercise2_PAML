@@ -19,6 +19,17 @@ class _FormKulinerState extends State<FormKuliner> {
   final _nama = TextEditingController();
   final _deskripsi = TextEditingController();
 
+  Future<void> getImage() async {
+    final XFile? pickedFile =
+        await _imagePicker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold();
