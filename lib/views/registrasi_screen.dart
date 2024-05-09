@@ -15,6 +15,10 @@ class _FormKulinerState extends State<FormKuliner> {
   final _imagePicker = ImagePicker();
   String? _alamat;
 
+  final _formKey = GlobalKey<FormState>();
+  final _nama = TextEditingController();
+  final _deskripsi = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold();
