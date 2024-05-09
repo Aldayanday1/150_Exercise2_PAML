@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kulinerjogja/controllers/kuliner_controller.dart';
 import 'package:kulinerjogja/model/kuliner.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:kulinerjogja/views/home_screen.dart';
 
 class DetailView extends StatefulWidget {
   final Kuliner kuliner;
@@ -72,6 +73,66 @@ class _DetailViewState extends State<DetailView> {
                   ),
                 ),
               ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FloatingActionButton(
+              backgroundColor:
+                  Color.fromARGB(255, 255, 255, 255).withOpacity(0.8),
+              onPressed: () async {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text("Konfirmasi"),
+                      content:
+                          Text("Apakah Anda yakin ingin menghapus data ini?"),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text("Tidak"),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            var result = await _controller
+                                .deleteKuliner(widget.kuliner.id);
+                            if (result['success']) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(result['message'])),
+                              );
+                              Navigator.pop(context);
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomeView(),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(result['message'])),
+                              );
+                            }
+                            Navigator.pop(context);
+                          },
+                          child: Text("Ya"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              child: Icon(Icons.delete),
+            ),
+            SizedBox(
+              width: 20,
             ),
           ],
         ),
