@@ -1,7 +1,7 @@
 class class KulinerService {
 
   final String baseUrl = 'http://192.168.56.1:8080/kuliner_150/';
-  
+
   Uri getUri(String path) {
     return Uri.parse("$baseUrl$path");
   }
@@ -21,5 +21,14 @@ class class KulinerService {
 
     var streamedResponse = await request.send();
     return await http.Response.fromStream(streamedResponse);
+  }
+
+  Future<List<dynamic>> fetchKuliner() async {
+    var response = await http.get(
+      getUri('all'),
+      headers: {
+        HttpHeaders.acceptHeader: "application/json",
+      },
+    );
   }
 }
