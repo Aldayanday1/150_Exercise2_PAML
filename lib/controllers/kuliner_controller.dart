@@ -58,4 +58,13 @@ class KulinerController {
       throw Exception('Failed to get All kuliner');
     }
   }
+
+  Future<Map<String, dynamic>> updateKuliner(
+      Kuliner kuliner, File? file) async {
+    Map<String, String> data = {
+      'nama': kuliner.nama,
+      'alamat': kuliner.alamat,
+      'deskripsi': kuliner.deskripsi
+    };
+  }
 }
