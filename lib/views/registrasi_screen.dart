@@ -67,6 +67,26 @@ class _FormKulinerState extends State<FormKuliner> {
             controller: _nama,
             validator: _validateText,
           ),
+          SizedBox(height: 16),
+          Text(
+            "Deskripsi",
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 8),
+          TextFormField(
+            maxLines: 1,
+            decoration: InputDecoration(
+              hintText: "Masukkan Deskripsi",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            controller: _deskripsi,
+            validator: _validateText,
+          ),
         ],
       ),
     );
