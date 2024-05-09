@@ -1,5 +1,12 @@
-class KulinerController {
+// mengkonsumsi api dari database
 
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:kulinerjogja/model/kuliner.dart';
+import 'package:kulinerjogja/services/kuliner_service.dart';
+
+class KulinerController {
   final KulinerService kulinerService = KulinerService();
 
   Future<Map<String, dynamic>> addKuliner(Kuliner kuliner, File? file) async {
@@ -43,6 +50,9 @@ class KulinerController {
   Future<List<Kuliner>> getAllKuliner() async {
     try {
       List<dynamic> kulinerData = await kulinerService.fetchKuliner();
+      List<Kuliner> kuliner =
+          kulinerData.map((json) => Kuliner.fromJson(json)).toList();
+      return kuliner;
     } catch (e) {
       print('Error in getAllKuliner: $e');
       throw Exception('Failed to get All kuliner');
