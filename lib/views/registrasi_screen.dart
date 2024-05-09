@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:kulinerjogja/controllers/kuliner_controller.dart';
+import 'package:kulinerjogja/model/kuliner.dart';
+import 'package:kulinerjogja/views/home_screen.dart';
 import 'package:kulinerjogja/views/map_screen.dart';
 
 class FormKuliner extends StatefulWidget {
@@ -193,6 +196,57 @@ class _FormKulinerState extends State<FormKuliner> {
                       ),
                     ),
                   ),
+          ),
+          SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: getImage,
+                child: Text("Pilih Gambar"),
+              ),
+              SizedBox(width: 25),
+              ElevatedButton(
+                onPressed: () async {
+                  if (_alamat == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Alamat harus dipilih'),
+                      ),
+                    );
+                  } else if (_formKey.currentState!.validate()) {
+                    var result = await KulinerController().addKuliner(
+                      Kuliner(
+                        id: -1,
+                        nama: _nama.text,
+                        alamat: _alamat!,
+                        gambar: _image!.path,
+                        deskripsi: _deskripsi.text,
+                      ),
+                      _image,
+                    );
+                    if (result['success']) {
+                      _nama.clear();
+                      _deskripsi.clear();
+                      setState(() {
+                        _image = null;
+                        _alamat = null;
+                      });
+                    }
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomeView(),
+                      ),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(result['message'])),
+                    );
+                  }
+                },
+                child: const Text("Simpan"),
+              ),
+            ],
           ),
         ],
       ),
