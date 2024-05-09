@@ -2,6 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kulinerjogja/controllers/kuliner_controller.dart';
+import 'package:kulinerjogja/model/kuliner.dart';
+import 'package:kulinerjogja/views/home_screen.dart';
 import 'package:kulinerjogja/views/map_screen.dart';
 
 class EditKuliner extends StatefulWidget {
@@ -20,6 +23,17 @@ class _EditKulinerState extends State<EditKuliner> {
   final _formKey = GlobalKey<FormState>();
   final _nama = TextEditingController();
   final _deskripsi = TextEditingController();
+
+  Future<void> getImage() async {
+    final XFile? pickedFile =
+        await _imagePicker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      }
+    });
+  }
 
   String? _validateText(String? value) {
     if (value == null || value.isEmpty) {
@@ -171,12 +185,63 @@ class _EditKulinerState extends State<EditKuliner> {
                                 ),
                               ),
                       ),
+                      SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: getImage,
+                            child: Text("Pilih Gambar"),
+                          ),
+                          SizedBox(width: 25),
+                          ElevatedButton(
+                            onPressed: () async {
+                              if (_alamat == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text('Alamat harus dipilih')),
+                                );
+                              } else if (_formKey.currentState!.validate()) {
+                                if (_image != null) {
+                                  var result =
+                                      await KulinerController().updateKuliner(
+                                    Kuliner(
+                                      id: _idKuliner,
+                                      nama: _nama.text,
+                                      deskripsi: _deskripsi.text,
+                                      alamat: _alamat!,
+                                      gambar: '',
+                                    ),
+                                    _image,
+                                  );
+                                } else {
+                                  var result =
+                                      await KulinerController().updateKuliner(
+                                    Kuliner(
+                                      id: _idKuliner,
+                                      nama: _nama.text,
+                                      deskripsi: _deskripsi.text,
+                                      alamat: _alamat!,
+                                      gambar: '',
+                                    ),
+                                    null,
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(result['message'])),
+                                  );
+                                }
+                              }
+                            },
+                            child: const Text("Simpan"),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ],
               ),
             ),
-          ),
+          )
         ],
       ),
     );
