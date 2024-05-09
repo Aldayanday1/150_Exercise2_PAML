@@ -214,6 +214,17 @@ class _EditKulinerState extends State<EditKuliner> {
                                     ),
                                     _image,
                                   );
+                                  if (result['success']) {
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => HomeView(),
+                                      ),
+                                    );
+                                  }
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(result['message'])),
+                                  );
                                 } else {
                                   var result =
                                       await KulinerController().updateKuliner(
@@ -226,6 +237,14 @@ class _EditKulinerState extends State<EditKuliner> {
                                     ),
                                     null,
                                   );
+                                  if (result['success']) {
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => HomeView(),
+                                      ),
+                                    );
+                                  }
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text(result['message'])),
                                   );
