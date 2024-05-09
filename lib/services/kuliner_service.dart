@@ -44,5 +44,14 @@ class class KulinerService {
       'PUT',
       getUri('update/$id'),
     );
+
+    request.fields.addAll(data);
+
+    if (file != null) {
+      request.files.add(await http.MultipartFile.fromPath('gambar', file.path));
+    }
+
+    var streamedResponse = await request.send();
+    return await http.Response.fromStream(streamedResponse);
   }
 }
