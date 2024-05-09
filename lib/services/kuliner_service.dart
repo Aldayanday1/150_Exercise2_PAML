@@ -1,4 +1,9 @@
-class class KulinerService {
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+
+
+class KulinerService {
 
   final String baseUrl = 'http://192.168.56.1:8080/kuliner_150/';
 
