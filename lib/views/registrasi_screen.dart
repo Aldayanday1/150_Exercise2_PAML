@@ -161,6 +161,39 @@ class _FormKulinerState extends State<FormKuliner> {
               ),
             ),
           ),
+          SizedBox(height: 16),
+          Text(
+            "Gambar",
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 8),
+          Container(
+            height: 150,
+            child: _image == null
+                ? Text(
+                    "Tidak ada gambar yang dipilih!",
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 192, 95, 95),
+                    ),
+                  )
+                : Container(
+                    width: 300,
+                    child: Card(
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: Image.file(
+                        _image!,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+          ),
         ],
       ),
     );
