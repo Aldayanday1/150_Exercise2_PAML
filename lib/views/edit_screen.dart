@@ -10,6 +10,11 @@ class EditKuliner extends StatefulWidget {
 class _EditKulinerState extends State<EditKuliner> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 61, 61, 61),
+      appBar: AppBar(
+        title: Text("Edit Screen"),
+      ),
+    );
   }
 }

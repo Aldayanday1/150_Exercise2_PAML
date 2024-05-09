@@ -98,6 +98,8 @@ class _MapScreenState extends State<MapScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FloatingActionButton(
+                  backgroundColor:
+                      Color.fromARGB(255, 211, 233, 238).withOpacity(0.7),
                   onPressed: () async {
                     List<Placemark> placemarks = await placemarkFromCoordinates(
                       _lastMapPosition!.latitude,
@@ -109,7 +111,8 @@ class _MapScreenState extends State<MapScreen> {
                           '${place.subLocality}, ${place.locality}, ${place.country}.';
                       if (fullAddress != widget.currentAddress) {
                         widget.onLocationSelected(fullAddress);
-                        Navigator.pop(context, fullAddress);
+                        Navigator.pop(context,
+                            fullAddress); // Kirim alamat yang dipilih saat kembali ke layar sebelumnya
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Silakan ubah alamat')),
@@ -117,7 +120,8 @@ class _MapScreenState extends State<MapScreen> {
                       }
                     } else {
                       widget.onLocationSelected("No address found");
-                      Navigator.pop(context, "No address found");
+                      Navigator.pop(context,
+                          "No address found"); // Kirim pesan jika alamat tidak ditemukan saat kembali ke layar sebelumnya
                     }
                   },
                   child: const Text('Submit'),
