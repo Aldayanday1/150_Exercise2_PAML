@@ -37,4 +37,12 @@ class class KulinerService {
       throw Exception('Failed to load kuliner: ${response.reasonPhrase}');
     }
   }
+
+  Future<http.Response> updateKuliner(
+      int id, Map<String, String> data, File? file) async {
+    var request = http.MultipartRequest(
+      'PUT',
+      getUri('update/$id'),
+    );
+  }
 }
