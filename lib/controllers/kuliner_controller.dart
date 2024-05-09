@@ -39,4 +39,7 @@ class KulinerController {
       };
     }
   }
+
+  Future<List<Kuliner>> getAllKuliner() async {
+    
 }
