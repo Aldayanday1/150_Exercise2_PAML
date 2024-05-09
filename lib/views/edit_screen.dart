@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:kulinerjogja/views/map_screen.dart';
 
 class EditKuliner extends StatefulWidget {
   const EditKuliner({super.key});
@@ -8,6 +12,11 @@ class EditKuliner extends StatefulWidget {
 }
 
 class _EditKulinerState extends State<EditKuliner> {
+  File? _image;
+  final _imagePicker = ImagePicker();
+  String? _alamat;
+  int _idKuliner = 0;
+
   final _formKey = GlobalKey<FormState>();
   final _nama = TextEditingController();
   final _deskripsi = TextEditingController();
@@ -66,6 +75,69 @@ class _EditKulinerState extends State<EditKuliner> {
             ),
             controller: _deskripsi,
             validator: _validateText,
+          ),
+          SizedBox(height: 16),
+          Text(
+            "Alamat",
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 8),
+          Card(
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            color: Color.fromARGB(255, 243, 243, 243),
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _alamat == null
+                      ? Text(
+                          'Alamat kosong !',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 219, 0, 0),
+                          ),
+                        )
+                      : Text(_alamat!),
+                  SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        onPressed: () async {
+                          final selectedAddress = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MapScreen(
+                                currentAddress: _alamat,
+                                onLocationSelected: (selectedAddress) {
+                                  setState(() {
+                                    _alamat = selectedAddress;
+                                  });
+                                },
+                              ),
+                            ),
+                          );
+                          if (selectedAddress != null) {
+                            setState(() {
+                              _alamat = selectedAddress;
+                            });
+                          }
+                        },
+                        child: _alamat == null
+                            ? const Text('Pilih Alamat')
+                            : const Text('Ubah Alamat'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
