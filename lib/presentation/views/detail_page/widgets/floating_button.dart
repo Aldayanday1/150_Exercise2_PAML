@@ -191,12 +191,12 @@ class _ActionButtonsState extends State<ActionButtons> {
                 Color.fromARGB(255, 255, 250, 250).withOpacity(0.8),
             onPressed: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EditKuliner(),
-                    settings: RouteSettings(arguments: widget.kuliner),
-                  ),
-                );
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditKuliner(),
+                  settings: RouteSettings(arguments: widget.kuliner),
+                ),
+              );
             },
             child: Icon(Icons.edit),
           ),

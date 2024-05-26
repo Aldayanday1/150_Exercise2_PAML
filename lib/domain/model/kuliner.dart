@@ -132,7 +132,7 @@ class Kuliner {
       gambar: json['gambar'],
       deskripsi: json['deskripsi'],
       kategori: Kategori.fromString(json['kategori']),
-      latitude: json['latitude'] ?? 0.0, 
+      latitude: json['latitude'] ?? 0.0,
       longitude: json['longitude'] ?? 0.0,
     );
   }

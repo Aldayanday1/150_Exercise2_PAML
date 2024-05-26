@@ -66,29 +66,28 @@ class KulinerService {
   // -------------- PUT -------------------
 
   Future<http.Response> updateKuliner(
-  int id, Map<String, dynamic> data, File? file) async {
-  var request = http.MultipartRequest(
-    'PUT',
-    getUri('update/$id'),
-  );
+      int id, Map<String, dynamic> data, File? file) async {
+    var request = http.MultipartRequest(
+      'PUT',
+      getUri('update/$id'),
+    );
 
-  // Tambahkan data ke permintaan
-  data.forEach((key, value) {
-    if (value != null) {
-      request.fields[key] = value.toString();
+    // Tambahkan data ke permintaan
+    data.forEach((key, value) {
+      if (value != null) {
+        request.fields[key] = value.toString();
+      }
+    });
+
+    // Tambahkan file gambar jika ada
+    if (file != null) {
+      request.files.add(await http.MultipartFile.fromPath('gambar', file.path));
     }
-  });
 
-  // Tambahkan file gambar jika ada
-  if (file != null) {
-    request.files.add(await http.MultipartFile.fromPath('gambar', file.path));
+    // Kirim permintaan dan dapatkan respons
+    var streamedResponse = await request.send();
+    return await http.Response.fromStream(streamedResponse);
   }
-
-  // Kirim permintaan dan dapatkan respons
-  var streamedResponse = await request.send();
-  return await http.Response.fromStream(streamedResponse);
-}
-
 
   // -------------- DELETE -------------------
 
