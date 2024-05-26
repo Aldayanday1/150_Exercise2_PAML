@@ -1,11 +1,16 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:kulinerjogja/controllers/kuliner_controller.dart';
-import 'package:kulinerjogja/model/kuliner.dart';
-import 'package:kulinerjogja/views/home_screen.dart';
-import 'package:kulinerjogja/views/map_screen.dart';
+import 'package:kulinerjogja/presentation/controllers/kuliner_controller.dart';
+import 'package:kulinerjogja/domain/model/kuliner.dart';
+import 'package:kulinerjogja/presentation/views/home_page/home_screen.dart';
+import 'package:kulinerjogja/presentation/views/map_screen.dart';
+import 'package:kulinerjogja/presentation/views/map_static.dart';
+import 'package:kulinerjogja/presentation/views/register_page/widgets/radio_button.dart';
 
 class EditKuliner extends StatefulWidget {
   const EditKuliner({Key? key}) : super(key: key);
@@ -18,11 +23,16 @@ class _EditKulinerState extends State<EditKuliner> {
   File? _image;
   final _imagePicker = ImagePicker();
   String? _alamat;
+  LatLng? _selectedLocation;
+
+  // terkait dengan id kuliner dengan settingan default -> 0
   int _idKuliner = 0;
 
   final _formKey = GlobalKey<FormState>();
   final _nama = TextEditingController();
   final _deskripsi = TextEditingController();
+
+  // ------------ IMAGE ---------------
 
   Future<void> getImage() async {
     final XFile? pickedFile =
@@ -34,6 +44,10 @@ class _EditKulinerState extends State<EditKuliner> {
       }
     });
   }
+
+  Kategori? selectedKategori;
+
+  // ------------ VALIDATE TEXT ---------------
 
   String? _validateText(String? value) {
     if (value == null || value.isEmpty) {
@@ -61,13 +75,48 @@ class _EditKulinerState extends State<EditKuliner> {
       _idKuliner = kuliner.id;
       _nama.text = kuliner.nama;
       _deskripsi.text = kuliner.deskripsi;
-      if (kuliner.gambar != null) {
-        _image = File(kuliner.gambar);
-      }
+      selectedKategori = kuliner.kategori;
+      _image = File(kuliner.gambar);
       setState(() {
         _alamat = kuliner.alamat;
+        _selectedLocation = LatLng(
+            kuliner.latitude,
+            kuliner
+                .longitude); // Pastikan Kuliner memiliki latitude dan longitude
       });
     }
+  }
+
+  // void _updateLocation(LatLng newPosition) {
+  //   setState(() {
+  //     _selectedLocation = newPosition;
+  //   });
+  // }
+
+  void _navigateToMapScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MapScreen(
+          onLocationSelected: (selectedLocation, selectedAddress) {
+            // Update koordinat geografis dan alamat yang dipilih dari peta.
+            setState(() {
+              _selectedLocation = selectedLocation;
+              _alamat = selectedAddress;
+            });
+            // Pop navigator untuk kembali ke halaman edit.
+            Navigator.pop(context);
+          },
+          currentLocation: _selectedLocation,
+          currentAddress: _alamat,
+        ),
+      ),
+    );
+
+    // Setelah kembali dari layar penuh, perbarui lokasi yang terpilih.
+    // setState(() {
+    //   _selectedLocation = selectedLocation;
+    // });
   }
 
   @override
@@ -131,6 +180,15 @@ class _EditKulinerState extends State<EditKuliner> {
                     validator: _validateText,
                   ),
                   SizedBox(height: 16),
+                  // ----------- RADIO BUTTON ----------------
+                  RadioButton(
+                    selectedKategori: selectedKategori,
+                    onKategoriSelected: (Kategori? value) {
+                      setState(() {
+                        selectedKategori = value;
+                      });
+                    },
+                  ),
                   Text(
                     "Alamat",
                     style: TextStyle(
@@ -139,60 +197,42 @@ class _EditKulinerState extends State<EditKuliner> {
                     ),
                   ),
                   SizedBox(height: 8),
-                  Card(
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    color: Color.fromARGB(255, 243, 243, 243),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _alamat == null
-                              ? Text(
-                                  'Alamat kosong !',
-                                  style: TextStyle(
-                                    color: Color.fromARGB(255, 219, 0, 0),
-                                  ),
+                  GestureDetector(
+                    onTap: _navigateToMapScreen,
+                    child: Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      color: Color.fromARGB(255, 243, 243, 243),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Container(
+                          height: 200,
+                          child: _selectedLocation != null
+                              ? StaticMap(
+                                  location: _selectedLocation!,
                                 )
-                              : Text(_alamat!),
-                          SizedBox(height: 8),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              TextButton(
-                                onPressed: () async {
-                                  final selectedAddress = await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => MapScreen(
-                                        currentAddress: _alamat,
-                                        onLocationSelected: (selectedAddress) {
-                                          setState(() {
-                                            _alamat = selectedAddress;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  );
-                                  if (selectedAddress != null) {
-                                    setState(() {
-                                      _alamat = selectedAddress;
-                                    });
-                                  }
-                                },
-                                child: _alamat == null
-                                    ? const Text('Pilih Alamat')
-                                    : const Text('Ubah Alamat'),
-                              ),
-                            ],
-                          ),
-                        ],
+                              : Center(
+                                  child:
+                                      CircularProgressIndicator()), // loading indicator while waiting for the location to be resolved
+                        ),
                       ),
                     ),
                   ),
+                  SizedBox(height: 16),
+                  // Teks untuk menampilkan alamat yang diperbarui
+                  if (_alamat != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        'Alamat diperbarui: $_alamat',
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 74, 177, 77),
+                        ),
+                      ),
+                    ),
+
                   SizedBox(height: 16),
                   Text(
                     "Gambar",
@@ -246,54 +286,34 @@ class _EditKulinerState extends State<EditKuliner> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('Alamat harus dipilih')),
                             );
-                          } else if (_formKey.currentState!.validate()) {
-                            if (_image != null) {
-                              var result =
-                                  await KulinerController().updateKuliner(
-                                Kuliner(
-                                  id: _idKuliner,
-                                  nama: _nama.text,
-                                  deskripsi: _deskripsi.text,
-                                  alamat: _alamat!,
-                                  gambar: '',
+                          } else if (_formKey.currentState?.validate() ==
+                              true) {
+                            var kuliner = Kuliner(
+                              id: _idKuliner,
+                              nama: _nama.text,
+                              deskripsi: _deskripsi.text,
+                              alamat: _alamat!,
+                              latitude: _selectedLocation?.latitude ?? 0.0,
+                              longitude: _selectedLocation?.longitude ?? 0.0,
+                              gambar: '',
+                              kategori: selectedKategori!,
+                            );
+                            var result =
+                                await KulinerController().updateKuliner(
+                              kuliner,
+                              _image,
+                            );
+                            if (result['success']) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomeView(),
                                 ),
-                                _image,
-                              );
-                              if (result['success']) {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => HomeView(),
-                                  ),
-                                );
-                              }
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(result['message'])),
-                              );
-                            } else {
-                              var result =
-                                  await KulinerController().updateKuliner(
-                                Kuliner(
-                                  id: _idKuliner,
-                                  nama: _nama.text,
-                                  deskripsi: _deskripsi.text,
-                                  alamat: _alamat!,
-                                  gambar: '',
-                                ),
-                                null,
-                              );
-                              if (result['success']) {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => HomeView(),
-                                  ),
-                                );
-                              }
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(result['message'])),
                               );
                             }
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(result['message'])),
+                            );
                           }
                         },
                         child: const Text("Simpan"),

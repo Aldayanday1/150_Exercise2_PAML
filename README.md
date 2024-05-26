@@ -1,16 +1,31 @@
-# kulinerjogja
+# Exercise 2 - Aplikasi Mobile Lanjut
 
-A new Flutter project.
+- Membuat Aplikasi Kuliner Jogja yang dapat mencatat wisata kuliner yang telah di kunjungi
 
-## Getting Started
+## Identitas Diri :
 
-This project is a starting point for a Flutter application.
+    Nama    : Mochamad Aldi Raihan Fachrizal
 
-A few resources to get you started if this is your first Flutter project:
+    NIM     : 20210140150
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Read
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![alt text](image.png)
+
+## Detail
+
+![alt text](image-1.png)
+
+## Create - Validation (Nama, Deskripsi, Gambar)
+
+![alt text](image-2.png)
+
+## Create - Validation (Pop-up Validation)
+
+## Update
+
+## Update (Pop-up Validation)
+
+## Delete (Confirm)
+
+## Delete (Pop-up Validtion)
