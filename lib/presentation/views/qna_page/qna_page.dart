@@ -11,7 +11,7 @@ class _QnAState extends State<QnAPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.all(10.0),
         child: DefaultTabController(
           length: 3,
           child: NestedScrollView(
@@ -46,7 +46,7 @@ class _QnAState extends State<QnAPage> {
 
   Widget _buildAkademik() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 15),
+      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
       child: ListView(
         children: [
           ExpansionTile(

@@ -66,18 +66,13 @@ class KulinerService {
   // -------------- PUT -------------------
 
   Future<http.Response> updateKuliner(
-      int id, Map<String, dynamic> data, File? file) async {
+      int id, Map<String, String> data, File? file) async {
     var request = http.MultipartRequest(
       'PUT',
       getUri('update/$id'),
     );
 
-    // Tambahkan data ke permintaan
-    data.forEach((key, value) {
-      if (value != null) {
-        request.fields[key] = value.toString();
-      }
-    });
+    request.fields.addAll(data);
 
     // Tambahkan file gambar jika ada
     if (file != null) {

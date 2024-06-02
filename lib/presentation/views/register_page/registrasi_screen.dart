@@ -1,304 +1,360 @@
-// import 'dart:io';
+import 'dart:io';
 
-// import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'package:kulinerjogja/presentation/controllers/kuliner_controller.dart';
-// import 'package:kulinerjogja/domain/model/kuliner.dart';
-// import 'package:kulinerjogja/presentation/views/home_page/home_screen.dart';
-// import 'package:kulinerjogja/presentation/views/home_page/widgets/floating_button.dart';
-// import 'package:kulinerjogja/presentation/views/map_screen.dart';
-// import 'package:kulinerjogja/presentation/views/register_page/widgets/radio_button.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:kulinerjogja/presentation/controllers/kuliner_controller.dart';
+import 'package:kulinerjogja/domain/model/kuliner.dart';
+import 'package:kulinerjogja/presentation/views/home_page/home_screen.dart';
+import 'package:kulinerjogja/presentation/views/home_page/widgets/floating_button.dart';
+import 'package:kulinerjogja/presentation/views/map_page/map_screen.dart';
+import 'package:kulinerjogja/presentation/views/map_page/map_static.dart';
+import 'package:kulinerjogja/presentation/views/register_page/widgets/radio_button.dart';
 
-// class FormKuliner extends StatefulWidget {
-//   const FormKuliner({Key? key}) : super(key: key);
+class FormKuliner extends StatefulWidget {
+  const FormKuliner({Key? key}) : super(key: key);
 
-//   @override
-//   State<FormKuliner> createState() => _FormKulinerState();
-// }
+  @override
+  State<FormKuliner> createState() => _FormKulinerState();
+}
 
-// class _FormKulinerState extends State<FormKuliner> {
-//   File? _image;
-//   final _imagePicker = ImagePicker();
-//   String? _alamat;
+class _FormKulinerState extends State<FormKuliner> {
+  File? _image;
+  final _imagePicker = ImagePicker();
+  String? _alamat;
+  LatLng? _selectedLocation;
 
-//   // terkait dengan id kuliner dengan settingan default -> 0
-//   final int _idKuliner = 0;
+  final int _idKuliner = 0;
 
-//   final _formKey = GlobalKey<FormState>();
-//   final _nama = TextEditingController();
-//   final _deskripsi = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final _nama = TextEditingController();
+  final _deskripsi = TextEditingController();
 
-//   // ------------ IMAGE ---------------
+// ----------- GET IMAGE -------------
+  Future<void> getImage() async {
+    final XFile? pickedFile =
+        await _imagePicker.pickImage(source: ImageSource.gallery);
 
-//   Future<void> getImage() async {
-//     final XFile? pickedFile =
-//         await _imagePicker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      }
+    });
+  }
 
-//     setState(() {
-//       if (pickedFile != null) {
-//         _image = File(pickedFile.path);
-//       }
-//     });
-//   }
+// ----------- GET PHOTO -------------
+  Future<void> takePhoto() async {
+    final XFile? pickedFile =
+        await _imagePicker.pickImage(source: ImageSource.camera);
 
-//   Kategori? selectedKategori;
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      }
+    });
+  }
 
-//   // ------------ VALIDATE TEXT ---------------
+  Kategori? selectedKategori;
 
-//   String? _validateText(String? value) {
-//     if (value == null || value.isEmpty) {
-//       return 'Kolom ini tidak boleh kosong';
-//     }
-//     return null;
-//   }
+  String? _validateText(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Kolom ini tidak boleh kosong';
+    }
+    return null;
+  }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: const Color.fromARGB(255, 61, 61, 61),
-//       appBar: AppBar(
-//         title: Text("Form Kuliner", style: GoogleFonts.openSans()),
-//         centerTitle: true,
-//       ),
-//       body: SingleChildScrollView(
-//         child: Padding(
-//           padding: const EdgeInsets.all(25),
-//           child: Card(
-//             color: Color.fromARGB(255, 255, 252, 244),
-//             elevation: 4,
-//             shape: RoundedRectangleBorder(
-//               borderRadius: BorderRadius.circular(15),
-//             ),
-//             child: Padding(
-//               padding: const EdgeInsets.all(25), // Reduced padding here
-//               child: Form(
-//                 key: _formKey,
-//                 child: Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     Text(
-//                       "Nama",
-//                       style: TextStyle(
-//                         fontSize: 15,
-//                         fontWeight: FontWeight.bold,
-//                       ),
-//                     ),
-//                     SizedBox(height: 8),
-//                     TextFormField(
-//                       decoration: InputDecoration(
-//                         hintText: "Masukkan Nama",
-//                         border: OutlineInputBorder(
-//                           borderRadius: BorderRadius.circular(10),
-//                         ),
-//                       ),
-//                       controller: _nama,
-//                       validator: _validateText,
-//                     ),
-//                     SizedBox(height: 16),
-//                     Text(
-//                       "Deskripsi",
-//                       style: TextStyle(
-//                         fontSize: 15,
-//                         fontWeight: FontWeight.bold,
-//                       ),
-//                     ),
-//                     SizedBox(height: 8),
-//                     TextFormField(
-//                       maxLines: 1,
-//                       decoration: InputDecoration(
-//                         hintText: "Masukkan Deskripsi",
-//                         border: OutlineInputBorder(
-//                           borderRadius: BorderRadius.circular(10),
-//                         ),
-//                       ),
-//                       controller: _deskripsi,
-//                       validator: _validateText,
-//                     ),
-//                     SizedBox(height: 16),
-//                     // ----------- RADIO BUTTON ----------------
-//                     RadioButton(
-//                       selectedKategori: selectedKategori,
-//                       onKategoriSelected: (Kategori? value) {
-//                         setState(() {
-//                           selectedKategori = value;
-//                         });
-//                       },
-//                     ),
-//                     Text(
-//                       "Alamat",
-//                       style: TextStyle(
-//                         fontSize: 15,
-//                         fontWeight: FontWeight.bold,
-//                       ),
-//                     ),
-//                     SizedBox(height: 8),
-//                     Card(
-//                       elevation: 2,
-//                       shape: RoundedRectangleBorder(
-//                         borderRadius: BorderRadius.circular(10),
-//                       ),
-//                       color: Color.fromARGB(255, 243, 243, 243),
-//                       child: Padding(
-//                         padding:
-//                             const EdgeInsets.all(12), // Reduced padding here
-//                         child: Column(
-//                           crossAxisAlignment: CrossAxisAlignment.start,
-//                           children: [
-//                             _alamat == null
-//                                 ? Text(
-//                                     'Alamat kosong !',
-//                                     style: TextStyle(
-//                                       color: Color.fromARGB(255, 219, 0, 0),
-//                                     ),
-//                                   )
-//                                 : Text(_alamat!),
-//                             SizedBox(height: 8),
-//                             Row(
-//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                               children: [
-//                                 TextButton(
-//                                   onPressed: () async {
-//                                     Navigator.push(
-//                                       context,
-//                                       MaterialPageRoute(
-//                                         builder: (context) => MapScreen(
-//                                           onLocationSelected:
-//                                               (selectedAddress) {
-//                                             setState(() {
-//                                               _alamat = selectedAddress;
-//                                             });
-//                                           },
-//                                           currentAddress: _alamat!,
-//                                         ),
-//                                       ),
-//                                     );
-//                                   },
-//                                   child: Text('Pilih Alamat'),
-//                                 ),
-//                               ],
-//                             ),
-//                           ],
-//                         ),
-//                       ),
-//                     ),
-//                     SizedBox(height: 16),
-//                     Text(
-//                       "Gambar",
-//                       style: TextStyle(
-//                         fontSize: 15,
-//                         fontWeight: FontWeight.bold,
-//                       ),
-//                     ),
-//                     SizedBox(height: 8),
-//                     Container(
-//                       child: _image == null
-//                           ? Padding(
-//                               padding:
-//                                   const EdgeInsets.symmetric(vertical: 25.0),
-//                               child: Text(
-//                                 "Tidak ada gambar yang dipilih!",
-//                                 style: TextStyle(
-//                                   color: Color.fromARGB(255, 192, 95, 95),
-//                                 ),
-//                               ),
-//                             )
-//                           : Padding(
-//                               padding:
-//                                   const EdgeInsets.symmetric(vertical: 15.0),
-//                               child: Container(
-//                                 width: 300,
-//                                 child: Card(
-//                                   elevation: 10,
-//                                   shape: RoundedRectangleBorder(
-//                                     borderRadius: BorderRadius.circular(15),
-//                                   ),
-//                                   clipBehavior: Clip.antiAlias,
-//                                   child: Image.file(
-//                                     _image!,
-//                                     fit: BoxFit.cover,
-//                                   ),
-//                                 ),
-//                               ),
-//                             ),
-//                     ),
-//                     SizedBox(height: 16),
-//                     Row(
-//                       mainAxisAlignment: MainAxisAlignment.center,
-//                       children: [
-//                         ElevatedButton(
-//                           onPressed: getImage,
-//                           child: Text("Pilih Gambar"),
-//                         ),
-//                         SizedBox(width: 25),
-//                         ElevatedButton(
-//                           onPressed: () async {
-//                             if (_alamat == null) {
-//                               ScaffoldMessenger.of(context).showSnackBar(
-//                                 SnackBar(
-//                                   content: Text('Alamat harus dipilih'),
-//                                 ),
-//                               );
-//                             } else if (selectedKategori == null) {
-//                               ScaffoldMessenger.of(context).showSnackBar(
-//                                 SnackBar(
-//                                   content: Text('Kategori harus dipilih'),
-//                                 ),
-//                               );
-//                             } else if (_formKey.currentState!.validate()) {
-//                               var result = await KulinerController().addKuliner(
-//                                 Kuliner(
-//                                   id: _idKuliner,
-//                                   nama: _nama.text,
-//                                   alamat: _alamat!,
-//                                   gambar: _image?.path ?? '',
-//                                   deskripsi: _deskripsi.text,
-//                                   kategori: selectedKategori!,
-//                                 ),
-//                                 _image,
-//                               );
+  void _navigateToMapScreen() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MapScreen(
+          onLocationSelected: (selectedLocation, selectedAddress) {
+            setState(() {
+              _selectedLocation = selectedLocation;
+              _alamat = selectedAddress;
+            });
+          },
+          currentLocation: _selectedLocation,
+          currentAddress: _alamat,
+        ),
+      ),
+    );
+  }
 
-//                               if (result['success']) {
-//                                 _nama.clear();
-//                                 _deskripsi.clear();
-//                                 setState(() {
-//                                   _image = null;
-//                                   _alamat = null;
-//                                   selectedKategori = null;
-//                                 });
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color.fromARGB(255, 240, 240, 240),
+      appBar: AppBar(
+        title: Text("Form Kuliner", style: GoogleFonts.openSans()),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding:
+              const EdgeInsets.only(left: 50, right: 50, top: 50, bottom: 110),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Nama",
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                TextFormField(
+                  decoration: InputDecoration(
+                    hintText: "Masukkan Nama",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  controller: _nama,
+                  validator: _validateText,
+                ),
+                SizedBox(height: 16),
+                Text(
+                  "Deskripsi",
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                TextFormField(
+                  maxLines: 1,
+                  decoration: InputDecoration(
+                    hintText: "Masukkan Deskripsi",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  controller: _deskripsi,
+                  validator: _validateText,
+                ),
+                SizedBox(height: 16),
+                RadioButton(
+                  selectedKategori: selectedKategori,
+                  onKategoriSelected: (Kategori? value) {
+                    setState(() {
+                      selectedKategori = value;
+                    });
+                  },
+                ),
+                Text(
+                  "Alamat",
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  color: Color.fromARGB(255, 243, 243, 243),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _alamat == null
+                            ? Text(
+                                'Alamat kosong !',
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 192, 95, 95),
+                                ),
+                              )
+                            : Text(_alamat!),
+                        SizedBox(height: 8),
+                        InkWell(
+                          onTap: _navigateToMapScreen,
+                          child: Card(
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            color: Color.fromARGB(255, 243, 243, 243),
+                            child: Container(
+                              height: 200,
+                              child: Stack(
+                                children: [
+                                  _selectedLocation != null
+                                      ? StaticMap(location: _selectedLocation!)
+                                      : Center(
+                                          child:
+                                              Text("Tap untuk pilih Alamat!")),
+                                  GestureDetector(
+                                    onTap: _navigateToMapScreen,
+                                    behavior: HitTestBehavior.translucent,
+                                    child: Container(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  "Gambar",
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Container(
+                  child: _image == null
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 25.0),
+                          child: Text(
+                            "Tidak ada gambar yang dipilih!",
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 192, 95, 95),
+                            ),
+                          ),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 15.0),
+                          child: Container(
+                            width: 300,
+                            child: Card(
+                              elevation: 10,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              clipBehavior: Clip.antiAlias,
+                              child: Image.file(
+                                _image!,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ),
+                ),
+                Row(
+                  children: [
+                    ElevatedButton(
+                      onPressed: getImage,
+                      child: Text("Pilih Gambar"),
+                    ),
+                    ElevatedButton(
+                      onPressed: takePhoto,
+                      child: Text("Ambil Foto"),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 200,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          List<String> missingData = [];
 
-//                                 // Tampilkan SnackBar sebelum melakukan navigasi
-//                                 ScaffoldMessenger.of(context).showSnackBar(
-//                                   SnackBar(content: Text(result['message'])),
-//                                 );
+                          if (_nama.text.isEmpty &&
+                              _deskripsi.text.isEmpty &&
+                              _alamat == null &&
+                              selectedKategori == null &&
+                              _image == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Tidak ada data yang diisi'),
+                              ),
+                            );
+                          } else {
+                            if (_nama.text.isEmpty) {
+                              missingData.add('Nama');
+                            }
+                            if (_deskripsi.text.isEmpty) {
+                              missingData.add('Deskripsi');
+                            }
+                            if (_alamat == null) {
+                              missingData.add('Alamat');
+                            }
+                            if (selectedKategori == null) {
+                              missingData.add('Kategori');
+                            }
+                            if (_image == null) {
+                              missingData.add('Gambar');
+                            }
 
-//                                 // Lakukan navigasi setelah SnackBar ditampilkan
-//                                 Navigator.pushReplacement(
-//                                   context,
-//                                   MaterialPageRoute(
-//                                     builder: (context) => HomeView(),
-//                                   ),
-//                                 );
-//                               } else {
-//                                 // Tampilkan pesan error jika terjadi kesalahan
-//                                 ScaffoldMessenger.of(context).showSnackBar(
-//                                   SnackBar(content: Text(result['message'])),
-//                                 );
-//                               }
-//                             }
-//                           },
-//                           child: const Text("Simpan"),
-//                         ),
-//                       ],
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ),
-//       ),
-//       floatingActionButton: FloatingButton(),
-//     );
-//   }
-// }
+                            if (missingData.isNotEmpty) {
+                              String missingDataMessage = 'Harap isi data ';
+                              missingDataMessage += missingData.join(', ');
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(missingDataMessage)),
+                              );
+                            } else {
+                              DateTime now = DateTime.now();
+                              var result = await KulinerController().addKuliner(
+                                Kuliner(
+                                  id: _idKuliner,
+                                  nama: _nama.text,
+                                  alamat: _alamat!,
+                                  gambar: _image?.path ?? '',
+                                  deskripsi: _deskripsi.text,
+                                  kategori: selectedKategori!,
+                                  latitude: _selectedLocation?.latitude ?? 0.0,
+                                  longitude:
+                                      _selectedLocation?.longitude ?? 0.0,
+                                  createdAt: now,
+                                  updatedAt: now,
+                                ),
+                                _image,
+                              );
+
+                              if (result['success']) {
+                                _nama.clear();
+                                _deskripsi.clear();
+                                setState(() {
+                                  _image = null;
+                                  _alamat = null;
+                                  selectedKategori = null;
+                                });
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(result['message'])),
+                                );
+
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => HomeView(),
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(result['message'])),
+                                );
+                              }
+                            }
+                          }
+                        },
+                        child: const Text("Simpan"),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingButton(),
+    );
+  }
+}

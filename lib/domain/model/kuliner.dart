@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 // Enumeration untuk merepresentasikan berbagai kategori kuliner.
 // Setiap kategori memiliki metode untuk mendapatkan tampilan nama kategorinya.
 // Terdapat juga metode untuk mengonversi string kategori menjadi enum dan sebaliknya.
@@ -28,9 +30,9 @@ enum Kategori {
       case Kategori.MAKANAN:
         return 'Makanan';
       case Kategori.MINUMAN:
-        return 'Senin, 12:30 - 15:00';
+        return 'Minuman';
       case Kategori.KUE:
-        return 'Kue';
+        return 'Transportasi';
       case Kategori.DESSERT:
         return 'Dessert';
       case Kategori.SNACK:
@@ -105,12 +107,14 @@ enum Kategori {
 class Kuliner {
   int id;
   String nama;
+  String deskripsi;
   String alamat;
   String gambar;
-  String deskripsi;
   Kategori kategori;
   double latitude;
   double longitude;
+  DateTime createdAt;
+  DateTime updatedAt;
 
   Kuliner({
     required this.id,
@@ -121,6 +125,8 @@ class Kuliner {
     required this.kategori,
     required this.latitude,
     required this.longitude,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
 // Mengonversi data JSON menjadi objek Kuliner.
@@ -134,6 +140,8 @@ class Kuliner {
       kategori: Kategori.fromString(json['kategori']),
       latitude: json['latitude'] ?? 0.0,
       longitude: json['longitude'] ?? 0.0,
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
     );
   }
 
@@ -151,6 +159,28 @@ class Kuliner {
       'kategori': Kategori.kategoriToString(kategori),
       'latitude': latitude,
       'longitude': longitude,
+      // Format ISO 8601 -> format standar untuk representasi tanggal dan waktu
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
     };
+  }
+
+  String get dateMessage {
+    if (createdAt == updatedAt) {
+      return createdAtFormatted;
+    } else {
+      return updatedAtFormatted;
+    }
+  }
+
+  // Metode untuk mengonversi tanggal menjadi format yang sesuai
+  String get createdAtFormatted {
+    final DateFormat formatter = DateFormat('EEEE, d MMMM. HH:mm', 'id_ID');
+    return formatter.format(createdAt);
+  }
+
+  String get updatedAtFormatted {
+    final DateFormat formatter = DateFormat('EEEE, d MMMM. HH:mm', 'id_ID');
+    return formatter.format(updatedAt);
   }
 }

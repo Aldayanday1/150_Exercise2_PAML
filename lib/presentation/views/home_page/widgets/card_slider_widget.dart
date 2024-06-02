@@ -1,40 +1,40 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:kulinerjogja/domain/model/kuliner.dart';
+import 'package:kulinerjogja/presentation/views/detail_page/detail_screen.dart';
 
 class AutoSlideCards extends StatefulWidget {
+  final List<Kuliner> kulinerList;
+
+  AutoSlideCards({required this.kulinerList});
+
   @override
   _AutoSlideCardsState createState() => _AutoSlideCardsState();
 }
 
 class _AutoSlideCardsState extends State<AutoSlideCards> {
   late Timer _timer;
-  late PageController _pageController = PageController(viewportFraction: 0.8);
+  late PageController _pageController;
   int _currentPage = 0;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: 0);
+    _pageController = PageController(viewportFraction: 0.8);
 
-    // Mengatur timer untuk menggeser slide setiap 3 detik
     _timer = Timer.periodic(Duration(seconds: 3), (timer) {
-      if (_currentPage < 2) {
-        // Jika belum di slide terakhir, lanjutkan ke slide berikutnya
-        _pageController.nextPage(
-          duration: Duration(milliseconds: 500),
-          curve: Curves.ease,
-        );
+      if (_currentPage < widget.kulinerList.length - 1) {
+        _currentPage++;
       } else {
-        // Jika sudah di slide terakhir, kembali ke slide pertama dengan animasi
-        _pageController.animateToPage(
-          0,
-          duration: Duration(milliseconds: 500),
-          curve: Curves.ease,
-        );
+        _currentPage = 0;
       }
+      _pageController.animateToPage(
+        _currentPage,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.ease,
+      );
     });
 
-    // Mendengarkan perubahan halaman untuk memperbarui indikator
     _pageController.addListener(() {
       setState(() {
         _currentPage = _pageController.page!.round();
@@ -44,7 +44,7 @@ class _AutoSlideCardsState extends State<AutoSlideCards> {
 
   @override
   void dispose() {
-    _timer.cancel(); // Memastikan timer dihentikan saat widget dihapus
+    _timer.cancel();
     _pageController.dispose();
     super.dispose();
   }
@@ -56,9 +56,10 @@ class _AutoSlideCardsState extends State<AutoSlideCards> {
       child: Column(
         children: [
           SizedBox(
-            height: MediaQuery.of(context).size.height / 3.2, // Tinggi slide
+            height: MediaQuery.of(context).size.height / 2.1,
             child: PageView.builder(
               controller: _pageController,
+              itemCount: widget.kulinerList.length,
               itemBuilder: (context, index) {
                 return AnimatedBuilder(
                   animation: _pageController,
@@ -70,21 +71,122 @@ class _AutoSlideCardsState extends State<AutoSlideCards> {
                     }
                     return Center(
                       child: SizedBox(
-                        height: Curves.easeOut.transform(value) * 250,
-                        width: Curves.easeOut.transform(value) * 350,
+                        height: Curves.easeOut.transform(value) * 500,
+                        width: Curves.easeOut.transform(value) * 400,
                         child: child,
                       ),
                     );
                   },
-                  child: buildCard(index),
+                  child: buildCard(widget.kulinerList[index]),
                 );
               },
-              itemCount: 3, // Jumlah card
             ),
           ),
-          SizedBox(height: 8), // Padding antara slider dan indikator
-          buildIndicator(), // Indikator titik-titik
+          SizedBox(height: 5),
+          buildIndicator(),
         ],
+      ),
+    );
+  }
+
+  Widget buildCard(Kuliner kuliner) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DetailView(kuliner: kuliner),
+          ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 1,
+              blurRadius: 8,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16.0),
+          child: Stack(
+            children: [
+              Image.network(
+                kuliner.gambar,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+              ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.black54, Colors.transparent],
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                    ),
+                  ),
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        kuliner.nama,
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          shadows: [
+                            Shadow(
+                              blurRadius: 10.0,
+                              color: Colors.black,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.location_on,
+                            color: Colors.white,
+                            size: 16,
+                          ),
+                          SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              kuliner.alamat,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.white,
+                                shadows: [
+                                  Shadow(
+                                    blurRadius: 10.0,
+                                    color: Colors.black,
+                                    offset: Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -93,79 +195,17 @@ class _AutoSlideCardsState extends State<AutoSlideCards> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(
-        3,
+        widget.kulinerList.length,
         (index) => Container(
           width: 8.0,
           height: 8.0,
           margin: EdgeInsets.symmetric(horizontal: 4.0),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: _currentPage == index
-                ? Colors.blue
-                : Colors.grey, // Warna titik aktif atau non-aktif
+            color: _currentPage == index ? Colors.blue : Colors.grey,
           ),
         ),
       ),
     );
   }
-
-  Widget buildCard(int index) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-      decoration: BoxDecoration(
-        gradient: _getGradient(),
-        borderRadius: BorderRadius.circular(16.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 8,
-            offset: Offset(0, 4), // changes position of shadow
-          ),
-        ],
-      ),
-      child: Card(
-        color: Colors
-            .transparent, // Set card color to transparent to see BoxDecoration
-        elevation: 0, // Remove card default shadow
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-        child: Center(
-          child: Text(
-            'Slide ${index + 1}',
-            style: TextStyle(
-              fontSize: 24,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// Fungsi untuk mengatur warna tiap slide
-Color _getColor(int index) {
-  switch (index) {
-    case 0:
-      return Color.fromARGB(255, 255, 100, 216);
-    case 1:
-      return Color.fromARGB(255, 189, 118, 255);
-    case 2:
-      return Color.fromARGB(255, 123, 113, 255);
-    default:
-      return Color.fromARGB(255, 106, 186, 255); // Default color
-  }
-}
-
-LinearGradient _getGradient() {
-  return LinearGradient(
-    colors: [
-      Color.fromARGB(255, 123, 113, 255), // Biru
-      Color.fromARGB(255, 255, 100, 216), // Ungu agak pink
-    ],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
 }

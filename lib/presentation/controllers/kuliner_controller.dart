@@ -20,30 +20,27 @@ class KulinerController {
       'alamat': kuliner.alamat,
       'deskripsi': kuliner.deskripsi,
       'kategori': Kategori.kategoriToString(kuliner.kategori),
+      'latitude': kuliner.latitude.toString(),
+      'longitude': kuliner.longitude.toString(),
     };
 
     try {
       var response = await kulinerService.tambahKuliner(data, file);
 
-      // memeriksa status code dari response
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
+        var responseData = jsonDecode(response.body);
+        Kuliner addedKuliner = Kuliner.fromJson(responseData);
+
         return {
           'success': true,
-          'message': 'Data berhasil disimpan',
+          'message': ' Dibuat Pada ${addedKuliner.dateMessage}',
+          'kuliner': addedKuliner,
         };
       } else {
-        if (response.headers['content-type']!.contains('application/json')) {
-          var decodedJson = jsonDecode(response.body);
-          return {
-            'success': false,
-            'message': decodedJson['message'] ?? 'Terjadi kesalahan',
-          };
-        }
         var decodedJson = jsonDecode(response.body);
         return {
           'success': false,
-          'message':
-              decodedJson['message'] ?? 'Terjadi kesalahan saat menyimpan data',
+          'message': decodedJson['message'] ?? 'Terjadi kesalahan',
         };
       }
     } catch (e) {
@@ -84,20 +81,27 @@ class KulinerController {
       var response = await kulinerService.updateKuliner(kuliner.id, data, file);
 
       if (response.statusCode == 200) {
+        var responseData = jsonDecode(response.body);
+        Kuliner updatedKuliner = Kuliner.fromJson(responseData);
+
         return {
           'success': true,
-          'message':
-              response.body, // Menggunakan pesan yang diberikan oleh server
+          'message': 'Diperbarui pada ${updatedKuliner.dateMessage}',
+          'kuliner': updatedKuliner,
         };
-      } else {
-        // Jika status code lain, tampilkan pesan kesalahan default
+      } else if (response.statusCode == 400) {
         return {
           'success': false,
-          'message': 'Terjadi kesalahan saat memperbarui data',
+          'message': response.body,
+        };
+      } else {
+        var decodedJson = jsonDecode(response.body);
+        return {
+          'success': false,
+          'message': decodedJson['message'] ?? 'Terjadi kesalahan',
         };
       }
     } catch (e) {
-      // Menangkap kesalahan jaringan atau saat decoding JSON
       return {
         'success': false,
         'message': 'Terjadi kesalahan: $e',

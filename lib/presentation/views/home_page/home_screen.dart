@@ -7,6 +7,7 @@ import 'package:kulinerjogja/presentation/views/home_page/widgets/card_kuliner.d
 import 'package:kulinerjogja/presentation/views/home_page/widgets/card_slider_widget.dart';
 import 'package:kulinerjogja/presentation/views/home_page/widgets/floating_button.dart';
 import 'package:kulinerjogja/presentation/views/search_page/widgets/search_widget.dart';
+import 'package:lottie/lottie.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -78,13 +79,13 @@ class _HomeViewState extends State<HomeView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 20),
+                    SizedBox(height: 70),
                     Padding(
                       padding: EdgeInsets.only(top: 15, bottom: 0, left: 20),
                       child: Text(
                         "Hi, Aldi Raihan !",
                         style: GoogleFonts.leagueSpartan(
-                          fontSize: 22.5,
+                          fontSize: 25,
                           color: Color.fromARGB(255, 66, 66, 66),
                           fontWeight: FontWeight.normal,
                         ),
@@ -102,7 +103,7 @@ class _HomeViewState extends State<HomeView> {
                         ),
                       ),
                     ),
-                    AutoSlideCards(),
+                    AutoSlideCards(kulinerList: _allKuliner ?? []),
                     ThreeCardsRow(
                       selectedCategory: _selectedCategory,
                       onCategoryTap: _loadKategori,
@@ -131,19 +132,21 @@ class _HomeViewState extends State<HomeView> {
                         } else if (!snapshot.hasData ||
                             snapshot.data!.isEmpty) {
                           return Center(
-                              child: Padding(
-                            padding:
-                                const EdgeInsets.only(top: 80, bottom: 180),
-                            child: Container(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 80, bottom: 180),
+                              child: Container(
                                 child: Text(
-                              "Maaf, Tidak Tersedia.",
-                              style: GoogleFonts.roboto(
-                                fontSize: 13.5,
-                                color: Color.fromARGB(255, 66, 66, 66),
-                                fontWeight: FontWeight.normal,
+                                  "Maaf, Tidak Tersedia.",
+                                  style: GoogleFonts.roboto(
+                                    fontSize: 13.5,
+                                    color: Color.fromARGB(255, 66, 66, 66),
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                ),
                               ),
-                            )),
-                          ));
+                            ),
+                          );
                         } else {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 100.0),
@@ -154,6 +157,7 @@ class _HomeViewState extends State<HomeView> {
                               itemCount: snapshot.data?.length ?? 0,
                               itemBuilder: (context, index) {
                                 Kuliner kuliner = snapshot.data![index];
+                                // Memeriksa apakah data baru atau diperbarui
                                 return buildKulinerCard(context, kuliner);
                               },
                             ),

@@ -37,23 +37,27 @@ class _ThreeCardsRowState extends State<ThreeCardsRow> {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            buildCard("Makanan", widget.selectedCategory == "Makanan",
+            buildCard("Infrastruktur", widget.selectedCategory == "Makanan",
                 () => _handleCardTap("Makanan")),
-            buildCard("Minuman", widget.selectedCategory == "Minuman",
+            buildCard("Lingkungan", widget.selectedCategory == "Minuman",
                 () => _handleCardTap("Minuman")),
-            buildCard("Kue", widget.selectedCategory == "Kue",
+            buildCard("Transportasi", widget.selectedCategory == "Kue",
                 () => _handleCardTap("Kue")),
-            buildCard("Dessert", widget.selectedCategory == "Dessert",
+            buildCard(
+                "Keamanan dan Ketertiban",
+                widget.selectedCategory == "Dessert",
                 () => _handleCardTap("Dessert")),
-            buildCard("Snack", widget.selectedCategory == "Snack",
-                () => _handleCardTap("Snack")),
-            buildCard("Bread", widget.selectedCategory == "Bread",
+            buildCard("Kesehatan", widget.selectedCategory == "Bread",
                 () => _handleCardTap("Bread")),
-            buildCard("Tea", widget.selectedCategory == "Tea",
+            buildCard("Pendidikan", widget.selectedCategory == "Tea",
                 () => _handleCardTap("Tea")),
-            buildCard("Coffee", widget.selectedCategory == "Coffee",
-                () => _handleCardTap("Coffee")),
-            buildCard("Juice", widget.selectedCategory == "Juice",
+            buildCard("Sosial", widget.selectedCategory == "Snack",
+                () => _handleCardTap("Snack")),
+            buildCard(
+                "Perizinan dan Regulasi",
+                widget.selectedCategory == "Juice",
+                () => _handleCardTap("Juice")),
+            buildCard("Lainnya", widget.selectedCategory == "Juice",
                 () => _handleCardTap("Juice")),
           ],
         ),
@@ -71,8 +75,8 @@ class _ThreeCardsRowState extends State<ThreeCardsRow> {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: Color.fromARGB(255, 231, 213, 255),
-                    blurRadius: 8.0,
+                    color: Color.fromARGB(255, 235, 235, 235),
+                    blurRadius: 10.0,
                     offset: Offset(0, 0),
                   )
                 ]
@@ -80,7 +84,7 @@ class _ThreeCardsRowState extends State<ThreeCardsRow> {
         ),
         child: Card(
           color: isSelected
-              ? Color.fromARGB(255, 245, 198, 245)
+              ? Color.fromARGB(255, 61, 61, 61)
               : Color.fromARGB(255, 255, 255, 255),
           elevation: isSelected ? 0 : 4,
           shape: RoundedRectangleBorder(
@@ -94,8 +98,8 @@ class _ThreeCardsRowState extends State<ThreeCardsRow> {
                 gradient: isSelected
                     ? LinearGradient(
                         colors: [
-                          Color.fromARGB(255, 167, 161, 255), // Biru
-                          Color.fromARGB(255, 255, 157, 230), // Ungu agak pink
+                          Color.fromARGB(255, 146, 146, 146), // Biru
+                          Color.fromARGB(255, 204, 204, 204), // Ungu agak pink
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,

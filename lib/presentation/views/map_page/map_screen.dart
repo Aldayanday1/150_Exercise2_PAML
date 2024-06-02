@@ -56,8 +56,9 @@ class _MapScreenState extends State<MapScreen> {
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
-    if (_lastMapPosition != null) {
-      mapController.animateCamera(CameraUpdate.newLatLng(_lastMapPosition!));
+    if (widget.currentLocation != null) {
+      _lastMapPosition = widget.currentLocation;
+      _lastAddress = widget.currentAddress;
     }
   }
 
@@ -83,8 +84,13 @@ class _MapScreenState extends State<MapScreen> {
           if (_lastMapPosition != null)
             Marker(
               markerId: MarkerId('currentLocation'),
+              draggable: true, // Aktifkan perpindahan marker
               position: _lastMapPosition!,
-            ),
+              onDragEnd: (newPosition) {
+                _updateSelectedLocation(
+                    newPosition); // Panggil fungsi untuk menangani perpindahan marker
+              },
+            )
         },
         onTap: (position) {
           setState(() {
@@ -106,14 +112,6 @@ class _MapScreenState extends State<MapScreen> {
                 fontWeight: FontWeight.normal,
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                if (_lastMapPosition != null) {
-                  _updateSelectedLocation(_lastMapPosition!);
-                }
-              },
-              child: Text('Pilih Lokasi Ini'),
-            ),
           ],
         ),
       ),
@@ -131,25 +129,14 @@ class _MapScreenState extends State<MapScreen> {
           "${place.subLocality}, ${place.locality}, ${place.country}.";
       setState(() {
         _lastAddress = fullAddress;
+        _lastMapPosition = position; // Update posisi terakhir peta
       });
+
+      // Memberi tahu EditScreen bahwa lokasi terpilih telah diperbarui
       widget.onLocationSelected(position, fullAddress);
+
+      // Kirim kembali data yang diperbarui ke EditScreen
+      Navigator.pop(context, {'location': position, 'address': fullAddress});
     }
   }
 }
-
-
-
-  // void _updateSelectedLocation(LatLng position) async {
-  //   List<Placemark> placemarks = await placemarkFromCoordinates(
-  //     position.latitude,
-  //     position.longitude,
-  //   );
-  //   if (placemarks.isNotEmpty) {
-  //     Placemark place = placemarks[0];
-  //     String fullAddress =
-  //         "${place.subLocality}, ${place.locality}, ${place.country}.";
-  //     if (fullAddress != widget.currentAddress) {
-  //       widget.onLocationSelected(fullAddress);
-  //     }
-  //   }
-  // }

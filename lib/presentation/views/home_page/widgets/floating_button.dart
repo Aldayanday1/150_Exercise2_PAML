@@ -29,10 +29,10 @@ class _FloatingButtonState extends State<FloatingButton> {
             context, MaterialPageRoute(builder: (context) => QnAPage()));
         break;
       case 2:
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => const FormKuliner()),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const FormKuliner()),
+        );
         break;
       case 3:
         // Navigate to settings
@@ -84,7 +84,7 @@ class _FloatingButtonState extends State<FloatingButton> {
                         ),
                         SizedBox(width: 60),
                         IconButton(
-                          icon: Icon(Icons.settings),
+                          icon: Icon(Icons.notes_outlined),
                           color: _selectedIndex == 3
                               ? Color.fromARGB(255, 167, 161, 255)
                               : Color.fromARGB(255, 255, 157, 230),

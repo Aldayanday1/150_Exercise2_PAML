@@ -3,7 +3,8 @@ import 'package:kulinerjogja/domain/model/kuliner.dart';
 import 'package:kulinerjogja/presentation/views/detail_page/detail_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-Widget buildKulinerCard(BuildContext context, Kuliner kuliner) {
+Widget buildKulinerCard(BuildContext context, Kuliner kuliner,
+    {bool isNew = true}) {
   return InkWell(
     onTap: () {
       Navigator.push(
@@ -63,9 +64,9 @@ Widget buildKulinerCard(BuildContext context, Kuliner kuliner) {
                         color: Color.fromARGB(255, 66, 66, 66),
                       ),
                     ),
-                    SizedBox(height: 7),
+                    SizedBox(height: 10),
                     Text(
-                      kuliner.kategoriString,
+                      kuliner.alamat,
                       style: GoogleFonts.roboto(
                         fontSize: 12.0,
                         color: Color.fromARGB(255, 66, 66, 66),

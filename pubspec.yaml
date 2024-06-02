@@ -28,7 +28,6 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  # snackbar customisasi
   another_flushbar: ^1.12.30
   cupertino_icons: ^1.0.6
   flutter:
@@ -37,8 +36,11 @@ dependencies:
   geolocator: ^9.0.2
   google_fonts: ^6.2.1
   google_maps_flutter: ^2.2.3
+  hidden_drawer_menu: ^3.0.1
   http: ^1.2.1
   image_picker: ^1.0.7
+  intl: ^0.19.0
+  lottie: ^3.1.2
   shared_preferences: ^2.2.3
 
 dev_dependencies:
