@@ -40,7 +40,7 @@ class _QnAState extends State<QnAPage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingButton(),
+      // floatingActionButton: FloatingButton(),
     );
   }
 

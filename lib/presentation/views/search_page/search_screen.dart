@@ -148,8 +148,16 @@ class _SearchPageState extends State<SearchPage> {
                           _navigateToDetailPage(kuliner);
                         },
                         child: ListTile(
-                          title: Text(kuliner.nama),
-                          subtitle: Text(kuliner.alamat),
+                          title: Text(
+                            kuliner.nama,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          subtitle: Text(
+                            kuliner.alamat,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                           leading: ClipRRect(
                             borderRadius: BorderRadius.circular(100),
                             child: Image.network(
@@ -234,8 +242,16 @@ class _SearchPageState extends State<SearchPage> {
                   _navigateToDetailPage(kuliner);
                 },
                 child: ListTile(
-                  title: Text(kuliner.nama),
-                  subtitle: Text(kuliner.alamat),
+                  title: Text(
+                    kuliner.nama,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: Text(
+                    kuliner.alamat,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   leading: ClipRRect(
                     borderRadius: BorderRadius.circular(100),
                     child: Image.network(

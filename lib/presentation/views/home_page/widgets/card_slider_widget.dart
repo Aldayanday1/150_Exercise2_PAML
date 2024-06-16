@@ -129,7 +129,10 @@ class _AutoSlideCardsState extends State<AutoSlideCards> {
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Colors.black54, Colors.transparent],
+                      colors: [
+                        Color.fromARGB(143, 0, 0, 0),
+                        Color.fromARGB(0, 10, 10, 10)
+                      ],
                       begin: Alignment.bottomCenter,
                       end: Alignment.topCenter,
                     ),
@@ -138,20 +141,30 @@ class _AutoSlideCardsState extends State<AutoSlideCards> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        kuliner.nama,
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          shadows: [
-                            Shadow(
-                              blurRadius: 10.0,
-                              color: Colors.black,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
+                      Container(
+                        width: double
+                            .infinity, // Make sure the text takes up the full width
+                        child: Text(
+                          kuliner.nama,
+                          style: TextStyle(
+                            fontSize: 23,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 3.0,
+                                color: Colors.black,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          overflow: TextOverflow.ellipsis, // Handle overflow
+                          maxLines:
+                              2, // Optional: specify the max number of lines
                         ),
+                      ),
+                      SizedBox(
+                        height: 5,
                       ),
                       Row(
                         children: [
@@ -197,12 +210,14 @@ class _AutoSlideCardsState extends State<AutoSlideCards> {
       children: List.generate(
         widget.kulinerList.length,
         (index) => Container(
-          width: 8.0,
-          height: 8.0,
+          width: 7.0,
+          height: 7.0,
           margin: EdgeInsets.symmetric(horizontal: 4.0),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: _currentPage == index ? Colors.blue : Colors.grey,
+            color: _currentPage == index
+                ? Color.fromARGB(255, 78, 78, 78)
+                : const Color.fromARGB(255, 175, 175, 175),
           ),
         ),
       ),

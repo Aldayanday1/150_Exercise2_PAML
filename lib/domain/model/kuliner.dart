@@ -167,9 +167,9 @@ class Kuliner {
 
   String get dateMessage {
     if (createdAt == updatedAt) {
-      return createdAtFormatted;
+      return 'Dibuat Pada : ${createdAtFormatted}';
     } else {
-      return updatedAtFormatted;
+      return 'Diperbarui Pada : ${updatedAtFormatted}';
     }
   }
 

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:kulinerjogja/domain/model/kuliner.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:kulinerjogja/presentation/controllers/kuliner_controller.dart';
-import 'package:kulinerjogja/presentation/views/edit_page/edit_screen.dart';
 import 'package:kulinerjogja/presentation/views/home_page/home_screen.dart';
 import 'dart:ui'; // Import dart:ui untuk menggunakan ImageFilter
 
@@ -17,27 +16,13 @@ class ActionButtons extends StatefulWidget {
 
 class _ActionButtonsState extends State<ActionButtons> {
   final KulinerController _controller = KulinerController();
-  bool _isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 25, left: 20),
       child: AnimatedSwitcher(
-        duration: Duration(milliseconds: 300),
-        child: _isExpanded
-            ? _buildExpandedButton()
-            : FloatingActionButton(
-                backgroundColor:
-                    Color.fromARGB(255, 255, 255, 255).withOpacity(0.8),
-                onPressed: () {
-                  setState(() {
-                    _isExpanded = true;
-                  });
-                },
-                child: Icon(Icons.add),
-              ),
-      ),
+          duration: Duration(milliseconds: 300), child: _buildExpandedButton()),
     );
   }
 
@@ -45,8 +30,7 @@ class _ActionButtonsState extends State<ActionButtons> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        FloatingActionButton(
-          backgroundColor: Color.fromARGB(255, 255, 255, 255).withOpacity(0.8),
+        ElevatedButton(
           onPressed: () {
             showDialog(
               context: context,
@@ -197,36 +181,6 @@ class _ActionButtonsState extends State<ActionButtons> {
             );
           },
           child: Icon(Icons.delete),
-        ),
-        SizedBox(
-          width: 20,
-        ),
-        FloatingActionButton(
-          backgroundColor: Color.fromARGB(255, 255, 250, 250).withOpacity(0.8),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => EditKuliner(
-                  kuliner: widget.kuliner,
-                ),
-                settings: RouteSettings(arguments: widget.kuliner),
-              ),
-            );
-          },
-          child: Icon(Icons.edit),
-        ),
-        SizedBox(
-          width: 20,
-        ),
-        FloatingActionButton(
-          backgroundColor: Color.fromARGB(255, 255, 250, 250).withOpacity(0.8),
-          onPressed: () {
-            setState(() {
-              _isExpanded = false;
-            });
-          },
-          child: Icon(Icons.close),
         ),
       ],
     );

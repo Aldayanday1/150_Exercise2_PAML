@@ -3,8 +3,7 @@ import 'package:kulinerjogja/domain/model/kuliner.dart';
 import 'package:kulinerjogja/presentation/views/detail_page/detail_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-Widget buildKulinerCard(BuildContext context, Kuliner kuliner,
-    {bool isNew = true}) {
+Widget buildKulinerCard(BuildContext context, Kuliner kuliner) {
   return InkWell(
     onTap: () {
       Navigator.push(
@@ -55,6 +54,9 @@ Widget buildKulinerCard(BuildContext context, Kuliner kuliner,
                         color: Color.fromARGB(255, 66, 66, 66),
                         fontWeight: FontWeight.bold,
                       ),
+                      overflow: TextOverflow
+                          .ellipsis, // Handle overflow with ellipsis
+                      maxLines: 1, // Optional: specify the max number of lines
                     ),
                     SizedBox(height: 7),
                     Text(
@@ -63,14 +65,35 @@ Widget buildKulinerCard(BuildContext context, Kuliner kuliner,
                         fontSize: 12.0,
                         color: Color.fromARGB(255, 66, 66, 66),
                       ),
+                      overflow: TextOverflow
+                          .ellipsis, // Handle overflow with ellipsis
+                      maxLines: 2, // Optional: specify the max number of lines
                     ),
                     SizedBox(height: 10),
-                    Text(
-                      kuliner.alamat,
-                      style: GoogleFonts.roboto(
-                        fontSize: 12.0,
-                        color: Color.fromARGB(255, 66, 66, 66),
-                      ),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.location_on,
+                          color: const Color.fromARGB(255, 94, 94, 94),
+                          size: 16,
+                        ),
+                        SizedBox(
+                            width:
+                                4), // Add some space between the icon and the text
+                        Expanded(
+                          child: Text(
+                            kuliner.alamat,
+                            style: GoogleFonts.roboto(
+                              fontSize: 12.0,
+                              color: Color.fromARGB(255, 66, 66, 66),
+                            ),
+                            overflow: TextOverflow
+                                .ellipsis, // Handle overflow with ellipsis
+                            maxLines:
+                                1, // Optional: specify the max number of lines
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

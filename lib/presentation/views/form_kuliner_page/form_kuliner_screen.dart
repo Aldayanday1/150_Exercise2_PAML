@@ -7,10 +7,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:kulinerjogja/presentation/controllers/kuliner_controller.dart';
 import 'package:kulinerjogja/domain/model/kuliner.dart';
 import 'package:kulinerjogja/presentation/views/home_page/home_screen.dart';
-import 'package:kulinerjogja/presentation/views/home_page/widgets/floating_button.dart';
 import 'package:kulinerjogja/presentation/views/map_page/map_screen.dart';
 import 'package:kulinerjogja/presentation/views/map_page/map_static.dart';
-import 'package:kulinerjogja/presentation/views/register_page/widgets/radio_button.dart';
+import 'package:kulinerjogja/presentation/views/form_kuliner_page/widgets/radio_button.dart';
 
 class FormKuliner extends StatefulWidget {
   const FormKuliner({Key? key}) : super(key: key);
@@ -354,7 +353,7 @@ class _FormKulinerState extends State<FormKuliner> {
           ),
         ),
       ),
-      floatingActionButton: FloatingButton(),
+      // floatingActionButton: FloatingButton(),
     );
   }
 }

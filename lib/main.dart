@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:kulinerjogja/presentation/views/auth_page/login_user_page/login_page.dart';
+import 'package:kulinerjogja/presentation/views/auth_page/register_page/register_page.dart';
 import 'package:kulinerjogja/presentation/views/home_page/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -28,7 +30,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: HomeView(), // Gunakan HiddenDrawer sebagai home
+      home: LoginPage(), // Gunakan HiddenDrawer sebagai home
     );
   }
 }

@@ -88,6 +88,8 @@ class _StaticMapEditState extends State<StaticMapEdit> {
         rotateGesturesEnabled: true,
         zoomControlsEnabled: true,
         zoomGesturesEnabled: true,
+        myLocationEnabled: true,
+        myLocationButtonEnabled: true,
       ),
     );
   }

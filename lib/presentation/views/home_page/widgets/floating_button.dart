@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kulinerjogja/presentation/views/home_page/home_screen.dart';
 import 'package:kulinerjogja/presentation/views/qna_page/qna_page.dart';
-import 'package:kulinerjogja/presentation/views/register_page/registrasi_screen.dart';
+import 'package:kulinerjogja/presentation/views/form_kuliner_page/form_kuliner_screen.dart';
 
 class FloatingButton extends StatefulWidget {
   @override
