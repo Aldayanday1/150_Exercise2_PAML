@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:kulinerjogja/domain/model/user_profile.dart';
 import 'package:kulinerjogja/presentation/controllers/user_controller.dart';
 import 'package:kulinerjogja/presentation/views/auth_pages/login_user_page/login_page.dart';
 import 'dart:async';
@@ -68,7 +68,8 @@ class _TokenInputPageLoginState extends State<TokenInputPageLogin> {
         // Navigate to home page after successful login
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomeView()),
+          MaterialPageRoute(
+              builder: (context) => HomeView()),
         );
       } catch (e) {
         String errorMessage = e.toString();

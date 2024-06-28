@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kulinerjogja/domain/model/kuliner.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kulinerjogja/presentation/views/detail_page/widgets/floating_button.dart';
-import 'package:kulinerjogja/presentation/views/edit_page/edit_screen.dart';
-import 'package:kulinerjogja/presentation/views/home_page/home_screen.dart';
-import 'package:kulinerjogja/presentation/views/map_page/map_static.dart';
+import 'package:kulinerjogja/presentation/views/map_page/map_static_detail.dart';
 
 class DetailView extends StatefulWidget {
   final Kuliner kuliner;
   final bool isNew;
 
-  const DetailView({Key? key, required this.kuliner, this.isNew = true})
-      : super(key: key);
+  const DetailView({
+    Key? key,
+    required this.kuliner,
+    this.isNew = true,
+  }) : super(key: key);
 
   @override
   State<DetailView> createState() => _DetailViewState();
@@ -22,6 +22,25 @@ class DetailView extends StatefulWidget {
 class _DetailViewState extends State<DetailView> {
   @override
   Widget build(BuildContext context) {
+    // ----------- STATUS COLOR TEXT -----------
+
+    Color statusColor;
+    String statusText = widget.kuliner.status ?? 'Pending';
+
+    switch (statusText.toUpperCase()) {
+      case 'PROGRESS':
+        statusColor = Colors.yellow;
+        statusText = 'In Progress';
+        break;
+      case 'DONE':
+        statusColor = Colors.green;
+        statusText = 'Done';
+        break;
+      default:
+        statusColor = Colors.red;
+        statusText = 'Pending';
+    }
+
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: SingleChildScrollView(
@@ -30,75 +49,81 @@ class _DetailViewState extends State<DetailView> {
           children: [
             Stack(
               children: [
+                // ----------- BACKGROUND IMAGE -----------
                 Hero(
                   tag: 'unique_tag_hero_${widget.kuliner.id}',
                   child: ClipPath(
                     clipper: BottomHalfCircleClipper(),
-                    child: Image.network(
-                      widget.kuliner.gambar,
+                    child: Container(
                       height: 500,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Color(0xFF6A1B9A),
+                            Color(0xFF8E24AA),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                      ),
+                      child: Image.network(
+                        widget.kuliner.gambar,
+                        height: 500,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        color: Colors.black.withOpacity(0.1),
+                        colorBlendMode: BlendMode.darken,
+                      ),
                     ),
                   ),
                 ),
                 Positioned.fill(
-                  bottom: 305, // Ubah jarak di sini
+                  bottom: 310, // Ubah jarak di sini
                   child: Center(
                     child: Text(
                       "Detail Screen",
                       style: GoogleFonts.roboto(
-                        fontSize: 24.0,
+                        fontSize: 20.0,
                         color: Color.fromARGB(255, 255, 255, 255),
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
                 ),
                 Positioned(
-                  top: 72,
+                  top: 75,
                   left: 30,
-                  child: IconButton(
-                    icon: Icon(Icons.arrow_back_ios),
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomeView(),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                Positioned.fill(
-                  bottom: 305, // Ubah jarak di sini
-                  left: 330,
-                  child: Center(
-                    child: IconButton(
-                      icon: Icon(Icons.edit),
-                      color: Color.fromARGB(
-                          255, 54, 54, 54), // pastikan warna ikon terlihat
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EditKuliner(
-                              kuliner: widget.kuliner,
-                            ),
-                            settings: RouteSettings(arguments: widget.kuliner),
-                          ),
-                        );
-                      },
+                  child: SizedBox(
+                    width: 40, // Lebar `Container`
+                    height: 40, // Tinggi `Container`
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.black.withOpacity(0.3), // Transparansi
+                      ),
+                      padding: EdgeInsets.only(left: 5), // Menghapus padding
+                      child: IconButton(
+                        icon: Icon(Icons.arrow_back_ios),
+                        iconSize: 16, // Mengurangi ukuran ikon
+                        color: Color.fromARGB(255, 255, 255, 255),
+                        onPressed: () {
+                          Navigator.pop(
+                            context,
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
+                )
               ],
             ),
             Padding(
-              padding: const EdgeInsets.all(40),
+              padding: const EdgeInsets.only(
+                  left: 50, right: 50, top: 50, bottom: 25),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // ----------- TITLE -----------
                   Text(
                     widget.kuliner.nama,
                     style: GoogleFonts.roboto(
@@ -108,6 +133,30 @@ class _DetailViewState extends State<DetailView> {
                     ),
                   ),
                   SizedBox(height: 20),
+
+                  // ----------- DESCRIPTION -----------
+
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 25, top: 20),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Deskripsi",
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.blueGrey[700],
+                          ),
+                        ),
+                        SizedBox(width: 16),
+                        Container(
+                          height: 1,
+                          width: 200, // Lebar garis horizontal di samping teks
+                          color: Colors.grey[400], // Warna garis horizontal
+                        ),
+                      ],
+                    ),
+                  ),
                   Text(
                     widget.kuliner.deskripsi,
                     style: GoogleFonts.roboto(
@@ -116,14 +165,17 @@ class _DetailViewState extends State<DetailView> {
                     ),
                   ),
                   SizedBox(height: 30),
-                  Text(
-                    'Kategori : ${widget.kuliner.kategoriString}',
-                    style: GoogleFonts.roboto(
-                      fontSize: 14.0,
-                      color: Color.fromARGB(255, 66, 66, 66),
-                    ),
-                  ),
-                  SizedBox(height: 10),
+                  // Text(
+                  //   'Kategori : ${widget.kuliner.kategoriString}',
+                  //   style: GoogleFonts.roboto(
+                  //     fontSize: 14.0,
+                  //     color: Color.fromARGB(255, 66, 66, 66),
+                  //   ),
+                  // ),
+                  // SizedBox(height: 10),
+
+                  // ----------- LOCATION TEXT -----------
+
                   Row(
                     children: [
                       Icon(
@@ -133,25 +185,69 @@ class _DetailViewState extends State<DetailView> {
                       ),
                       SizedBox(width: 4),
                       Expanded(
-                        child: Text(
-                          widget.kuliner.alamat,
-                          style: GoogleFonts.roboto(
-                            fontSize: 14.0,
-                            color: Color.fromARGB(255, 66, 66, 66),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 4.5),
+                          child: Text(
+                            widget.kuliner.alamat,
+                            style: GoogleFonts.roboto(
+                              fontSize: 14.0,
+                              color: Color.fromARGB(255, 66, 66, 66),
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
                           ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
                         ),
                       ),
                     ],
                   ),
+
+                  // ----------- PROFILE -----------
+
                   SizedBox(height: 10),
-                  Text(widget.kuliner.dateMessage),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 1.0, top: 3),
+                    child: Row(children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(25),
+                        child: Image.network(
+                          widget.kuliner.profileImagePembuat,
+                          width: 16,
+                          height: 16,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        'Dibuat oleh : ${widget.kuliner.namaPembuat}',
+                        style: GoogleFonts.roboto(
+                          fontSize: 14,
+                          color: Color.fromARGB(255, 66, 66, 66),
+                        ),
+                      ),
+                    ]),
+                  ),
+
+                  // ----------- DATE MESSAGE -----------
+
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 2.0, top: 18),
+                    child: Text(
+                      widget.kuliner.dateMessage,
+                      style: GoogleFonts.roboto(
+                        fontSize: 14,
+                        color: Color.fromARGB(255, 66, 66, 66),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
+
+            // ----------- MAPS -----------
+
             Padding(
-              padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
+              padding: EdgeInsets.only(left: 20, right: 20, bottom: 0),
               child: GestureDetector(
                 onVerticalDragUpdate: (ltlng) {},
                 child: Padding(
@@ -173,6 +269,165 @@ class _DetailViewState extends State<DetailView> {
                 ),
               ),
             ),
+
+            // ----------- STATUS TEXT -----------
+
+            Padding(
+              padding: const EdgeInsets.only(left: 53.0, bottom: 15, top: 25),
+              child: Row(children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      width: 9,
+                      height: 9,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: statusColor,
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      "Status : $statusText",
+                      style: GoogleFonts.roboto(
+                        fontSize: 13,
+                        color: Color.fromARGB(255, 66, 66, 66),
+                      ),
+                    ),
+                  ],
+                ),
+              ]),
+            ),
+
+            // ----------- TANGGAPAN ADMIN -----------
+
+            Padding(
+              padding: EdgeInsets.only(left: 40, top: 0, right: 40, bottom: 50),
+              child: Column(
+                children: [
+                  if (widget.kuliner.tanggapan != null)
+                    Container(
+                      width: double.infinity,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 10),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.1),
+                                      spreadRadius: 2,
+                                      blurRadius: 3,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: ClipOval(
+                                  child: Image.asset(
+                                    'assets/profile.png',
+                                    width: 20,
+                                    height: 20,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                        color: const Color.fromARGB(
+                                            255, 255, 255, 255),
+                                        borderRadius: BorderRadius.only(
+                                          topRight: Radius.circular(
+                                              25), // Adjust the curve radius here
+                                          bottomLeft: Radius.circular(
+                                              25), // Adjust the curve radius here
+                                          bottomRight: Radius.circular(
+                                              25), // Adjust the curve radius here
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.2),
+                                            spreadRadius: 1,
+                                            blurRadius: 9,
+                                            offset: Offset(5, 5),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Petugas",
+                                              style: GoogleFonts.roboto(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color.fromARGB(
+                                                    255, 66, 66, 66),
+                                              ),
+                                            ),
+                                            SizedBox(height: 5),
+                                            Text(
+                                              widget.kuliner.tanggapan!,
+                                              style: GoogleFonts.roboto(
+                                                fontSize: 12,
+                                                color: Color.fromARGB(
+                                                    255, 66, 66, 66),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 15,
+                                            ),
+                                            // Row(
+                                            //   mainAxisAlignment:
+                                            //       MainAxisAlignment.start,
+                                            //   children: [
+                                            //     Container(
+                                            //       width: 9,
+                                            //       height: 9,
+                                            //       decoration: BoxDecoration(
+                                            //         shape: BoxShape.circle,
+                                            //         color: statusColor,
+                                            //       ),
+                                            //     ),
+                                            //     SizedBox(width: 8),
+                                            //     Text(
+                                            //       statusText,
+                                            //       style: GoogleFonts.roboto(
+                                            //         fontSize: 13,
+                                            //         color: Color.fromARGB(
+                                            //             255, 66, 66, 66),
+                                            //       ),
+                                            //     ),
+                                            //   ],
+                                            // ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            )
           ],
         ),
       ),

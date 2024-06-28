@@ -3,14 +3,13 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kulinerjogja/domain/model/kuliner.dart';
 import 'package:kulinerjogja/data/services/kuliner_service.dart';
 
 class KulinerController {
   final KulinerService kulinerService = KulinerService();
-
-  // method untuk memuat data berdasarkan kategori yg dipilih
-  // List<Kuliner> kulinerList = [];
+  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
   // -------------- POST -------------------
 
@@ -22,6 +21,8 @@ class KulinerController {
       'kategori': Kategori.kategoriToString(kuliner.kategori),
       'latitude': kuliner.latitude.toString(),
       'longitude': kuliner.longitude.toString(),
+      'namaPembuat': kuliner.namaPembuat,
+      'profileImagePembuat': kuliner.profileImagePembuat,
     };
 
     try {
@@ -33,8 +34,16 @@ class KulinerController {
 
         return {
           'success': true,
-          'message': ' Dibuat Pada ${addedKuliner.dateMessage}',
+          'message': addedKuliner.dateMessage,
           'kuliner': addedKuliner,
+        };
+      } else if (response.statusCode == 401) {
+        await secureStorage.delete(
+            key: 'jwt_token'); // Hapus token dari storage
+        print('Token has been Revoked (expired): $secureStorage');
+        return {
+          'success': false,
+          'message': 'Token tidak valid. Silakan login kembali.',
         };
       } else {
         var decodedJson = jsonDecode(response.body);
@@ -64,6 +73,20 @@ class KulinerController {
     }
   }
 
+  // -------------- GET KULINER BY ID -------------------
+
+  Future<List<Kuliner>> getMyKuliner() async {
+    return await kulinerService.getMyKuliner();
+  }
+
+  // ------------ GET KULINER BY STATUS -----------------
+
+  Future<List<Kuliner>> getKulinerByStatus(String status) {
+    return kulinerService.getKulinerByStatus(status);
+  }
+
+  // -------------- GET GRAPH COUNT (LANGSUNG DI GRAPH WIDGET SCREEN)) -------------------
+
   // -------------- PUT -------------------
 
   Future<Map<String, dynamic>> updateKuliner(
@@ -83,16 +106,38 @@ class KulinerController {
       if (response.statusCode == 200) {
         var responseData = jsonDecode(response.body);
         Kuliner updatedKuliner = Kuliner.fromJson(responseData);
-
+        // HttpStatus.OK
         return {
           'success': true,
-          'message': 'Diperbarui pada ${updatedKuliner.dateMessage}',
+          'message': updatedKuliner.dateMessage,
           'kuliner': updatedKuliner,
         };
+        // HttpStatus.BAD_REQUEST
       } else if (response.statusCode == 400) {
         return {
           'success': false,
           'message': response.body,
+        };
+        // HttpStatus.UNAUTHORIZED
+      } else if (response.statusCode == 401) {
+        await secureStorage.delete(
+            key: 'jwt_token'); // Hapus token dari storage
+        print('Token has been Revoked (expired): $secureStorage');
+        return {
+          'success': false,
+          'message': 'Token tidak valid. Silakan login kembali.',
+        };
+        // HttpStatus.FORBIDDEN
+      } else if (response.statusCode == 403) {
+        return {
+          'success': false,
+          'message': 'Anda tidak diizinkan untuk mengubah kuliner ini.',
+        };
+        // HttpStatus.NOT_FOUND
+      } else if (response.statusCode == 404) {
+        return {
+          'success': false,
+          'message': 'Pengguna atau kuliner tidak ditemukan.',
         };
       } else {
         var decodedJson = jsonDecode(response.body);
@@ -114,21 +159,40 @@ class KulinerController {
   Future<Map<String, dynamic>> deleteKuliner(int id) async {
     try {
       var response = await kulinerService.deleteKuliner(id);
-      print("Delete successful");
+      // HttpStatus.OK
       if (response.statusCode == 200) {
         return {
           'success': true,
           'message': 'Data berhasil dihapus',
         };
+        // HttpStatus.UNAUTHORIZED
+      } else if (response.statusCode == 401) {
+        await secureStorage.delete(
+            key: 'jwt_token'); // Hapus token dari storage
+        print('Token has been Revoked (expired): $secureStorage');
+        return {
+          'success': false,
+          'message': 'Token tidak valid. Silakan login kembali.',
+        };
+        // HttpStatus.FORBIDDEN
+      } else if (response.statusCode == 403) {
+        return {
+          'success': false,
+          'message': 'Anda tidak diizinkan untuk menghapus kuliner ini.',
+        };
+        // HttpStatus.NOT_FOUND
+      } else if (response.statusCode == 404) {
+        return {
+          'success': false,
+          'message': 'Pengguna atau kuliner tidak ditemukan.',
+        };
+        // HttpStatus.INTERNAL_SERVER_ERROR
+      } else if (response.statusCode == 500) {
+        return {
+          'success': false,
+          'message': 'Terjadi kesalahan pada server.',
+        };
       } else {
-        print("Delete failed with status: ${response.statusCode}");
-        if (response.headers['content-type']!.contains('application/json')) {
-          var decodedJson = jsonDecode(response.body);
-          return {
-            'success': false,
-            'message': decodedJson['message'] ?? 'Terjadi kesalahan',
-          };
-        }
         var decodedJson = jsonDecode(response.body);
         return {
           'success': false,
@@ -137,7 +201,6 @@ class KulinerController {
         };
       }
     } catch (e) {
-      print("Delete exception: $e");
       return {
         'success': false,
         'message': 'Terjadi kesalahan: $e',

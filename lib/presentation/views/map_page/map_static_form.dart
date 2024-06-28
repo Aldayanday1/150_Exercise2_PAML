@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class StaticMap extends StatefulWidget {
+class StaticMapForm extends StatefulWidget {
   final LatLng location;
 
-  const StaticMap({Key? key, required this.location}) : super(key: key);
+  const StaticMapForm({Key? key, required this.location}) : super(key: key);
 
   @override
   _StaticMapState createState() => _StaticMapState();
 }
 
-class _StaticMapState extends State<StaticMap> {
+class _StaticMapState extends State<StaticMapForm> {
   late GoogleMapController _mapController;
 
   @override
-  void didUpdateWidget(covariant StaticMap oldWidget) {
+  void didUpdateWidget(covariant StaticMapForm oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.location != widget.location) {
       _moveCamera(widget.location);
@@ -54,23 +54,7 @@ class _StaticMapState extends State<StaticMap> {
               ),
             },
             trafficEnabled: true,
-            rotateGesturesEnabled: true,
-            zoomControlsEnabled: true,
-            zoomGesturesEnabled: true,
-            myLocationEnabled: true,
-          ),
-        ),
-        Positioned(
-          top: 55.0,
-          right: 7.0,
-          child: Opacity(
-            opacity: 0.7,
-            child: FloatingActionButton(
-              onPressed: _centerMapToMarker,
-              child: Icon(Icons.location_pin),
-              backgroundColor: Colors.white,
-              mini: true,
-            ),
+            zoomControlsEnabled: false,
           ),
         ),
       ],

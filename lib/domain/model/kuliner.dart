@@ -22,6 +22,8 @@ enum Kategori {
   // ignore: constant_identifier_names
   COFFEE,
   // ignore: constant_identifier_names
+  MILK,
+  // ignore: constant_identifier_names
   JUICE;
 
   // Mendapatkan tampilan nama kategori.
@@ -43,6 +45,8 @@ enum Kategori {
         return 'Tea';
       case Kategori.COFFEE:
         return 'Coffee';
+      case Kategori.MILK:
+        return 'Milk';
       case Kategori.JUICE:
         return 'Juice';
       default:
@@ -69,6 +73,8 @@ enum Kategori {
         return Kategori.TEA;
       case 'COFFEE':
         return Kategori.COFFEE;
+      case 'MILK':
+        return Kategori.MILK;
       case 'JUICE':
         return Kategori.JUICE;
       default:
@@ -95,6 +101,8 @@ enum Kategori {
         return 'TEA';
       case Kategori.COFFEE:
         return 'COFFEE';
+      case Kategori.MILK:
+        return 'MILK';
       case Kategori.JUICE:
         return 'JUICE';
       default:
@@ -115,6 +123,12 @@ class Kuliner {
   double longitude;
   DateTime createdAt;
   DateTime updatedAt;
+  // --- for name & profile ---
+  String namaPembuat;
+  String profileImagePembuat;
+  // --- for status & tanggapan ---
+  String? status;
+  String? tanggapan;
 
   Kuliner({
     required this.id,
@@ -127,6 +141,12 @@ class Kuliner {
     required this.longitude,
     required this.createdAt,
     required this.updatedAt,
+    // --- for name & profile ---
+    required this.namaPembuat,
+    required this.profileImagePembuat,
+    // --- for status & tanggapan ---
+    required this.status,
+    required this.tanggapan,
   });
 
 // Mengonversi data JSON menjadi objek Kuliner.
@@ -142,6 +162,12 @@ class Kuliner {
       longitude: json['longitude'] ?? 0.0,
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
+      // --- for name & profile ---
+      namaPembuat: json['namaPembuat'],
+      profileImagePembuat: json['profileImagePembuat'],
+      // --- for status & tanggapan ---
+      status: json['status'],
+      tanggapan: json['tanggapan'],
     );
   }
 
@@ -162,14 +188,20 @@ class Kuliner {
       // Format ISO 8601 -> format standar untuk representasi tanggal dan waktu
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
+      // --- for name & profile ---
+      'namaPembuat': namaPembuat,
+      'profileImagePembuat': profileImagePembuat,
+      // --- for status & tanggapan ---
+      'status': status,
+      'tanggapan': tanggapan,
     };
   }
 
   String get dateMessage {
     if (createdAt == updatedAt) {
-      return 'Dibuat Pada : ${createdAtFormatted}';
+      return 'Dibuat Pada : $createdAtFormatted';
     } else {
-      return 'Diperbarui Pada : ${updatedAtFormatted}';
+      return 'Diperbarui Pada : $updatedAtFormatted';
     }
   }
 

@@ -33,9 +33,14 @@ class _LoginPageState extends State<LoginPage> {
       try {
         String email = _emailController.text;
         String password = _passwordController.text;
+        // message dari hasil login
         String message = await _userController.loginUser(email, password);
+
+        // Tampilkan snackbar "Login berhasil"
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(message)));
+
+        // Navigate to token page after successful login
         Navigator.push(
           context,
           MaterialPageRoute(

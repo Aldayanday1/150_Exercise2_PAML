@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kulinerjogja/presentation/controllers/user_controller.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/register_page/email_verified.dart';
+import 'package:kulinerjogja/presentation/views/auth_pages/register_page/email_verified_page.dart';
 import 'dart:async';
 
 import 'package:kulinerjogja/presentation/views/auth_pages/register_page/register_page.dart';

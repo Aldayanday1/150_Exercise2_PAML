@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:kulinerjogja/domain/model/kuliner.dart';
 import 'package:kulinerjogja/presentation/views/detail_page/detail_screen.dart';
 
-class AutoSlideCards extends StatefulWidget {
+class AutoSlideCardsAdmin extends StatefulWidget {
   final List<Kuliner> kulinerList;
 
-  AutoSlideCards({required this.kulinerList});
+  AutoSlideCardsAdmin({required this.kulinerList});
 
   @override
   _AutoSlideCardsState createState() => _AutoSlideCardsState();
 }
 
-class _AutoSlideCardsState extends State<AutoSlideCards> {
+class _AutoSlideCardsState extends State<AutoSlideCardsAdmin> {
   late Timer _timer; // Timer untuk mengatur otomatisasi pergeseran halaman
   late PageController _pageController; // Pengendali halaman untuk PageView
   int _currentPage = 0; // Indeks halaman saat ini
@@ -22,7 +22,7 @@ class _AutoSlideCardsState extends State<AutoSlideCards> {
     super.initState();
     _pageController = PageController(viewportFraction: 0.8);
 
-    _timer = Timer.periodic(Duration(seconds: 3), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
       // Jika halaman saat ini belum mencapai halaman terakhir, geser ke halaman berikutnya
       if (_currentPage < widget.kulinerList.length - 1) {
         _currentPage++;
@@ -58,7 +58,7 @@ class _AutoSlideCardsState extends State<AutoSlideCards> {
       child: Column(
         children: [
           SizedBox(
-            height: MediaQuery.of(context).size.height / 2.1,
+            height: MediaQuery.of(context).size.height / 3.6,
             child: PageView.builder(
               controller: _pageController,
               itemCount: widget.kulinerList.length,
@@ -149,7 +149,7 @@ class _AutoSlideCardsState extends State<AutoSlideCards> {
                         child: Text(
                           kuliner.nama,
                           style: TextStyle(
-                            fontSize: 23,
+                            fontSize: 20,
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             shadows: [
@@ -162,7 +162,7 @@ class _AutoSlideCardsState extends State<AutoSlideCards> {
                           ),
                           overflow: TextOverflow.ellipsis, // Handle overflow
                           maxLines:
-                              2, // Optional: specify the max number of lines
+                              1, // Optional: specify the max number of lines
                         ),
                       ),
                       SizedBox(

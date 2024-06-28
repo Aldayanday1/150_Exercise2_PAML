@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +8,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kulinerjogja/presentation/controllers/kuliner_controller.dart';
 import 'package:kulinerjogja/domain/model/kuliner.dart';
+import 'package:kulinerjogja/presentation/views/auth_pages/login_user_page/login_page.dart';
 import 'package:kulinerjogja/presentation/views/detail_page/detail_screen.dart';
-import 'package:kulinerjogja/presentation/views/detail_page/widgets/floating_button.dart';
 import 'package:kulinerjogja/presentation/views/home_page/home_screen.dart';
 import 'package:kulinerjogja/presentation/views/map_page/map_static_edit.dart';
 import 'package:kulinerjogja/presentation/views/form_kuliner_page/widgets/radio_button.dart';
@@ -24,19 +23,12 @@ class EditKuliner extends StatefulWidget {
 }
 
 class _EditKulinerState extends State<EditKuliner> {
+  // -------- IMAGE PICKER --------
   File? _image;
   final _imagePicker = ImagePicker();
-  String? _alamat;
-  LatLng? _selectedLocation;
-
-  // terkait dengan id kuliner dengan settingan default -> 0
-  int _idKuliner = 0;
-
-  final _formKey = GlobalKey<FormState>();
-  final _nama = TextEditingController();
-  final _deskripsi = TextEditingController();
 
   // ----------- GET IMAGE -------------
+
   Future<void> getImage() async {
     final XFile? pickedFile =
         await _imagePicker.pickImage(source: ImageSource.gallery);
@@ -49,6 +41,7 @@ class _EditKulinerState extends State<EditKuliner> {
   }
 
 // ----------- GET PHOTO -------------
+
   Future<void> takePhoto() async {
     final XFile? pickedFile =
         await _imagePicker.pickImage(source: ImageSource.camera);
@@ -60,8 +53,6 @@ class _EditKulinerState extends State<EditKuliner> {
     });
   }
 
-  Kategori? selectedKategori;
-
   // ------------ VALIDATE TEXT ---------------
 
   String? _validateText(String? value) {
@@ -70,6 +61,16 @@ class _EditKulinerState extends State<EditKuliner> {
     }
     return null;
   }
+
+  // ------------ INITIALIZE DATA ---------------
+
+  final _formKey = GlobalKey<FormState>();
+
+  // terkait dengan id kuliner dengan settingan default -> 0
+  int _idKuliner = 0;
+  final _nama = TextEditingController();
+  final _deskripsi = TextEditingController();
+  Kategori? selectedKategori;
 
   @override
   void didChangeDependencies() {
@@ -99,11 +100,78 @@ class _EditKulinerState extends State<EditKuliner> {
     }
   }
 
+  //--------- CHANGES LOCATION MAPS ---------
+
+  String? _alamat;
+  LatLng? _selectedLocation;
+
   void _onLocationChanged(LatLng location, String address) {
     setState(() {
       _selectedLocation = location;
       _alamat = address;
     });
+  }
+
+  //---------- UPDATE PENGADUAN ---------
+
+  Future<void> _updateKuliner() async {
+    if (_formKey.currentState?.validate() == true) {
+      DateTime now = DateTime.now();
+
+      var kuliner = Kuliner(
+        id: _idKuliner,
+        nama: _nama.text,
+        deskripsi: _deskripsi.text,
+        alamat: _alamat!,
+        latitude: _selectedLocation?.latitude ?? 0.0,
+        longitude: _selectedLocation?.longitude ?? 0.0,
+        gambar: _image != null && _image!.path != widget.kuliner.gambar
+            ? _image!.path
+            : '',
+        kategori: selectedKategori!,
+        createdAt: widget.kuliner.createdAt,
+        updatedAt: now,
+        namaPembuat: '',
+        profileImagePembuat: '',
+        status: '',
+        tanggapan: '',
+      );
+
+      var result = await KulinerController().updateKuliner(
+        kuliner,
+        _image != null && _image!.path != widget.kuliner.gambar ? _image : null,
+      );
+
+      if (result['success']) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result['message'])),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeView(),
+          ),
+        );
+
+        // ------- BREAK SESSION -------
+      } else if (result['message'] ==
+          'Token tidak valid. Silakan login kembali.') {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginPage(),
+            settings: RouteSettings(
+              arguments: 'Session habis, silakan login kembali',
+            ),
+          ),
+          (Route<dynamic> route) => false,
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result['message'])),
+        );
+      }
+    }
   }
 
   @override
@@ -123,11 +191,26 @@ class _EditKulinerState extends State<EditKuliner> {
                     tag: 'unique_tag_hero_${widget.kuliner.id}',
                     child: ClipPath(
                       clipper: BottomHalfCircleClipper(),
-                      child: Image.network(
-                        widget.kuliner.gambar,
+                      child: Container(
                         height: 500,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Color(0xFF6A1B9A),
+                              Color(0xFF8E24AA),
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ),
+                        ),
+                        child: Image.network(
+                          widget.kuliner.gambar,
+                          height: 500,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          color: Colors.black.withOpacity(0.1),
+                          colorBlendMode: BlendMode.darken,
+                        ),
                       ),
                     ),
                   ),
@@ -137,118 +220,183 @@ class _EditKulinerState extends State<EditKuliner> {
                       child: Text(
                         "Edit Screen",
                         style: GoogleFonts.roboto(
-                          fontSize: 24.0,
+                          fontSize: 20.0,
                           color: Color.fromARGB(255, 255, 255, 255),
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
                   ),
                   Positioned(
-                    top: 72,
+                    top: 75,
                     left: 30,
-                    child: IconButton(
-                      icon: Icon(Icons.arrow_back_ios),
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DetailView(
-                              kuliner: widget.kuliner,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  Positioned.fill(
-                    bottom: 315,
-                    left: 330,
-                    child: Center(
-                      child: IconButton(
-                        icon: Icon(Icons.camera_alt),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => EditKuliner(
-                                kuliner: widget.kuliner,
+                    child: SizedBox(
+                      width: 40, // Lebar `Container`
+                      height: 40, // Tinggi `Container`
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.black.withOpacity(0.3), // Transparansi
+                        ),
+                        padding: EdgeInsets.only(left: 5), // Menghapus padding
+                        child: IconButton(
+                          icon: Icon(Icons.arrow_back_ios),
+                          iconSize: 16, // Mengurangi ukuran ikon
+                          color: Color.fromARGB(255, 255, 255, 255),
+                          onPressed: () {
+                            Navigator.pop(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DetailView(
+                                  kuliner: widget.kuliner,
+                                ),
                               ),
-                              settings:
-                                  RouteSettings(arguments: widget.kuliner),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  Positioned.fill(
-                    bottom: 200,
-                    left: 330,
-                    child: Center(
-                      child: IconButton(
-                        icon: Icon(Icons.photo),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => EditKuliner(
-                                kuliner: widget.kuliner,
-                              ),
-                              settings:
-                                  RouteSettings(arguments: widget.kuliner),
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.all(18.0),
+                padding: const EdgeInsets.all(35.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Nama",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
+                    SizedBox(height: 16),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 32.0, bottom: 16),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Form",
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.blueGrey[700],
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Container(
+                            height: 1,
+                            width:
+                                220, // Lebar garis horizontal di samping teks
+                            color: Colors.grey[400], // Warna garis horizontal
+                          ),
+                        ],
                       ),
-                    ),
-                    SizedBox(height: 8),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        hintText: "Masukkan Nama",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      controller: _nama,
-                      validator: _validateText,
                     ),
                     SizedBox(height: 16),
-                    Text(
-                      "Deskripsi",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    TextFormField(
-                      maxLines: 1,
-                      decoration: InputDecoration(
-                        hintText: "Masukkan Deskripsi",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+
+                    // ----------- TEXTFIELD NAMA ----------------
+
+                    Material(
+                      elevation: 5,
+                      shadowColor: Colors.black.withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(50),
+                      child: Container(
+                        height: 60,
+                        alignment: Alignment.centerLeft,
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            labelText: "Nama",
+                            labelStyle: GoogleFonts.roboto(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.blueGrey[700],
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 30, vertical: 20),
+                            hintText: "Masukkan Nama",
+                            hintStyle: TextStyle(fontSize: 13),
+                            filled: true,
+                            fillColor:
+                                Colors.white.withOpacity(0.7), // Efek kaca
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              // borderSide: BorderSide.none,
+                            ),
+                          ),
+                          controller: _nama,
+                          style: GoogleFonts.roboto(
+                            fontSize: 13,
+                            color: Color.fromARGB(255, 66, 66, 66),
+                            fontWeight: FontWeight.normal,
+                          ),
+                          validator: _validateText,
                         ),
                       ),
-                      controller: _deskripsi,
-                      validator: _validateText,
                     ),
-                    SizedBox(height: 16),
-                    // ----------- RADIO BUTTON ----------------
+                    SizedBox(height: 30),
+
+                    // ----------- TEXTFIELD DESKRIPSI ----------------
+
+                    Material(
+                      elevation: 5,
+                      shadowColor: Colors.black.withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(50),
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            labelText: "Deskripsi",
+                            labelStyle: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.blueGrey[700],
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 30, vertical: 20),
+                            hintText: "Masukkan Deskripsi",
+                            hintStyle: TextStyle(fontSize: 13),
+                            filled: true,
+                            fillColor:
+                                Colors.white.withOpacity(0.7), // Efek kaca
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              // borderSide: BorderSide.none,
+                            ),
+                          ),
+                          controller: _deskripsi,
+                          style: GoogleFonts.roboto(
+                            fontSize: 13,
+                            color: Color.fromARGB(255, 66, 66, 66),
+                            fontWeight: FontWeight.normal,
+                          ),
+                          validator: _validateText,
+                          maxLines:
+                              null, // Membuat TextFormField mendukung multiple lines
+                          minLines: 1, // Minimum number of lines
+                        ),
+                      ),
+                    ),
+
+                    // ----------- CATEGORY / RADIO BUTTON ----------------
+
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 30.0, bottom: 16, top: 40),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Kategori",
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.blueGrey[700],
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Container(
+                            height: 1,
+                            width:
+                                220, // Lebar garis horizontal di samping teks
+                            color: Colors.grey[400], // Warna garis horizontal
+                          ),
+                        ],
+                      ),
+                    ),
                     RadioButton(
                       selectedKategori: selectedKategori,
                       onKategoriSelected: (Kategori? value) {
@@ -257,14 +405,32 @@ class _EditKulinerState extends State<EditKuliner> {
                         });
                       },
                     ),
-                    Text(
-                      "Alamat",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
+
+                    // ----------- MAPS ----------------
+
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 30.0, bottom: 16, top: 40),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Alamat",
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.blueGrey[700],
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Container(
+                            height: 1,
+                            width:
+                                220, // Lebar garis horizontal di samping teks
+                            color: Colors.grey[400], // Warna garis horizontal
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(height: 8),
 
                     GestureDetector(
                       child: Card(
@@ -289,26 +455,44 @@ class _EditKulinerState extends State<EditKuliner> {
                     SizedBox(height: 16),
                     if (_alamat != null)
                       Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
+                        padding: const EdgeInsets.only(top: 8.0, left: 15),
                         child: Text(
-                          'Alamat diperbarui: $_alamat',
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 74, 177, 77),
+                          "Alamat Diperbarui : $_alamat",
+                          style: GoogleFonts.leagueSpartan(
+                            fontSize: 13,
+                            color: Color.fromARGB(255, 87, 87, 87),
+                            fontWeight: FontWeight.normal,
                           ),
                         ),
                       ),
 
-                    SizedBox(height: 16),
-                    Text(
-                      "Gambar",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
+                    // ----------- GAMBAR ----------------
+
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 30.0, bottom: 18, top: 40),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Gambar",
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.blueGrey[700],
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Container(
+                            height: 1,
+                            width:
+                                220, // Lebar garis horizontal di samping teks
+                            color: Colors.grey[400], // Warna garis horizontal
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(height: 8),
                     Container(
-                      height: 150,
+                      height: 450,
                       child: _image == null
                           ? Text(
                               "Tidak ada gambar yang dipilih!",
@@ -317,7 +501,8 @@ class _EditKulinerState extends State<EditKuliner> {
                               ),
                             )
                           : Container(
-                              width: 300,
+                              width: double
+                                  .infinity, // Membuat gambar sesuai dengan lebar layar
                               child: Card(
                                 elevation: 10,
                                 shape: RoundedRectangleBorder(
@@ -328,82 +513,160 @@ class _EditKulinerState extends State<EditKuliner> {
                                     ? Image.network(
                                         _image!.path,
                                         fit: BoxFit.cover,
+                                        height: 300, // Setel tinggi pada gambar
+                                        width: double
+                                            .infinity, // Lebar gambar sesuai layar
                                       )
                                     : Image.file(
                                         _image!,
                                         fit: BoxFit.cover,
+                                        height: 300, // Setel tinggi pada gambar
+                                        width: double
+                                            .infinity, // Lebar gambar sesuai layar
                                       ),
                               ),
                             ),
                     ),
-                    Row(
-                      children: [
-                        ElevatedButton(
-                          onPressed: getImage,
-                          child: Text("Pilih Gambar"),
-                        ),
-                        ElevatedButton(
-                          onPressed: takePhoto,
-                          child: Text("Ambil Foto"),
-                        ),
-                      ],
-                    ),
                     SizedBox(height: 16),
+
+                    // ----------- BUTTON TAKE IMAGE -----------
+
                     Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(width: 25),
-                        ElevatedButton(
-                          onPressed: () async {
-                            if (_formKey.currentState?.validate() == true) {
-                              DateTime now = DateTime.now();
-
-                              var kuliner = Kuliner(
-                                id: _idKuliner,
-                                nama: _nama.text,
-                                deskripsi: _deskripsi.text,
-                                alamat: _alamat!,
-                                latitude: _selectedLocation?.latitude ?? 0.0,
-                                longitude: _selectedLocation?.longitude ?? 0.0,
-                                gambar: _image != null &&
-                                        _image!.path != widget.kuliner.gambar
-                                    ? _image!.path
-                                    : '', // Gunakan nilai string kosong jika tidak ada perubahan pada gambar
-                                kategori: selectedKategori!,
-                                createdAt: widget.kuliner.createdAt,
-                                updatedAt: now,
-                              );
-
-                              var result =
-                                  await KulinerController().updateKuliner(
-                                kuliner,
-                                _image != null &&
-                                        _image!.path != widget.kuliner.gambar
-                                    ? _image
-                                    : null,
-                              );
-
-                              if (result['success']) {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => HomeView(),
+                        SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Material(
+                                elevation: 5,
+                                shadowColor: Colors.black.withOpacity(0.7),
+                                borderRadius: BorderRadius.circular(50),
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(50),
+                                  onTap: getImage,
+                                  child: Ink(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      color: Colors.white.withOpacity(
+                                          0.7), // Transparansi pada warna latar belakang
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.image,
+                                              size:
+                                                  20), // Icon untuk "Select Image"
+                                          SizedBox(width: 8),
+                                          Text(
+                                            "Select Image",
+                                            style: TextStyle(
+                                              fontSize: 13.0,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.blueGrey[700],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                );
-                              }
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 16),
 
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(result['message'])),
-                              );
-                            }
-                          },
-                          child: const Text("Simpan"),
+                            // ----------- BUTTON TAKE PHOTOS -----------
+
+                            Expanded(
+                              child: Material(
+                                elevation: 5,
+                                shadowColor: Colors.black.withOpacity(0.7),
+                                borderRadius: BorderRadius.circular(50),
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(50),
+                                  onTap: takePhoto,
+                                  child: Ink(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      color: Colors.white.withOpacity(
+                                          0.7), // Transparansi pada warna latar belakang
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.camera_alt,
+                                              size:
+                                                  20), // Icon untuk "Take Photo"
+                                          SizedBox(width: 8),
+                                          Text(
+                                            "Take Photo",
+                                            style: TextStyle(
+                                              fontSize: 13.0,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.blueGrey[700],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        ActionButtons(
-                          kuliner: widget.kuliner,
+                        SizedBox(height: 26),
+
+                        // ----------- BUTTON SAVE UPDATE -----------
+
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Material(
+                                elevation: 5,
+                                shadowColor: Colors.black.withOpacity(1),
+                                borderRadius: BorderRadius.circular(50),
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(50),
+                                  onTap: _updateKuliner,
+                                  child: Ink(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      color: Colors.white.withOpacity(
+                                          0.7), // Transparansi pada warna latar belakang
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "Save",
+                                            style: TextStyle(
+                                              fontSize: 13.0,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.blueGrey[700],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
+                        // Konten lainnya di sini
                       ],
-                    ),
+                    )
                   ],
                 ),
               ),

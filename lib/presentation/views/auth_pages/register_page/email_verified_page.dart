@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:kulinerjogja/presentation/views/auth_pages/login_user_page/login_page.dart';
 import 'dart:async';
 
-import 'package:kulinerjogja/presentation/views/home_page/home_screen.dart';
-
 class EmailVerifiedPage extends StatefulWidget {
   @override
   _EmailVerifiedPageState createState() => _EmailVerifiedPageState();

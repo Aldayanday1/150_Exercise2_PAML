@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:kulinerjogja/presentation/controllers/user_controller.dart';
+import 'package:kulinerjogja/presentation/views/auth_pages/login_user_page/login_page.dart';
 import 'package:kulinerjogja/presentation/views/home_page/home_screen.dart';
-import 'package:kulinerjogja/presentation/views/qna_page/qna_page.dart';
+import 'package:kulinerjogja/presentation/views/menubyid_page/menubyid_screen.dart';
 import 'package:kulinerjogja/presentation/views/form_kuliner_page/form_kuliner_screen.dart';
+import 'package:kulinerjogja/presentation/views/user_profile.dart/user_profile_screen.dart';
 
 class FloatingButton extends StatefulWidget {
+  const FloatingButton({super.key});
   @override
   _FloatingButtonState createState() => _FloatingButtonState();
 }
 
 class _FloatingButtonState extends State<FloatingButton> {
   int _selectedIndex = 0;
+  final UserController userController = UserController();
 
-  void _onItemTapped(int index) {
+  Future<void> _onItemTapped(int index) async {
     // Hanya update _selectedIndex jika indeks baru berbeda dengan yang sebelumnya
     if (_selectedIndex != index) {
       setState(() {
@@ -22,24 +27,78 @@ class _FloatingButtonState extends State<FloatingButton> {
     switch (index) {
       case 0:
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const HomeView()));
+            context, MaterialPageRoute(builder: (context) => HomeView()));
         break;
       case 1:
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => QnAPage()));
+        // Show confirmation dialog for logout
+        _showLogoutConfirmationDialog();
         break;
       case 2:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const FormKuliner()),
+          MaterialPageRoute(builder: (context) => FormKuliner()),
         );
         break;
       case 3:
-        // Navigate to settings
+        // MyMenuPage
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MyKulinerPage()),
+        );
         break;
       case 4:
-        // Navigate to profile
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => UserProfilePage()),
+        );
         break;
+    }
+  }
+
+  // Method to show the logout confirmation dialog
+  void _showLogoutConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Konfirmasi Logout'),
+          content: Text('Apakah Anda yakin ingin logout?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Tidak'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+            TextButton(
+              child: Text('Ya'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                _logout(); // Call the logout method
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Method to handle logout
+  Future<void> _logout() async {
+    try {
+      await userController.logout();
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+        // Menghapus semua route dari stack
+        (Route<dynamic> route) => false,
+      );
+    } catch (e) {
+      // Handle logout error
+      print('Error during logout: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Logout failed: $e')),
+      );
     }
   }
 
@@ -76,7 +135,7 @@ class _FloatingButtonState extends State<FloatingButton> {
                           onPressed: () => _onItemTapped(0),
                         ),
                         IconButton(
-                          icon: Icon(Icons.help),
+                          icon: Icon(Icons.logout),
                           color: _selectedIndex == 1
                               ? Color.fromARGB(255, 167, 161, 255)
                               : Color.fromARGB(255, 255, 157, 230),

@@ -3,6 +3,7 @@ import 'package:kulinerjogja/data/services/kuliner_service.dart';
 import 'package:kulinerjogja/presentation/views/search_page/search_screen.dart';
 
 class SearchWidget extends StatelessWidget {
+  const SearchWidget({super.key});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -18,7 +19,7 @@ class SearchWidget extends StatelessWidget {
         );
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+        padding: const EdgeInsets.only(top: 30, bottom: 20, right: 20),
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           decoration: BoxDecoration(

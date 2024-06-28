@@ -1,82 +1,131 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:kulinerjogja/domain/model/kuliner.dart';
 
 class RadioButton extends StatefulWidget {
-  // ----- MENAMBAHKAN PARAMETER selectedKategori DAN onKategoriSelected KEDALAM KONSTRUKTOR RADIO BUTTON
   final Kategori? selectedKategori;
   final Function(Kategori?) onKategoriSelected;
 
-//konstruktor parameter
-  const RadioButton(
-      {super.key, this.selectedKategori, required this.onKategoriSelected});
+  const RadioButton({
+    Key? key,
+    required this.selectedKategori,
+    required this.onKategoriSelected,
+  }) : super(key: key);
 
   @override
-  State<RadioButton> createState() => _RadioButtonState();
+  _RadioButtonState createState() => _RadioButtonState();
 }
 
 class _RadioButtonState extends State<RadioButton> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        RadioListTile<Kategori>(
-          title: const Text('Makanan'),
-          // value -> nilai ini terkait dengan masing-masing opsi dalam grup radio button
+        SizedBox(height: 8),
+        _buildRadioButton(
+          title: 'Makanan',
           value: Kategori.MAKANAN,
-          // groupValue -> mengelompokkan keseluruhan radio button dalam value yg sama
-          groupValue: widget.selectedKategori,
-          onChanged: widget.onKategoriSelected,
         ),
-        RadioListTile<Kategori>(
-          title: const Text("Minuman"),
+        SizedBox(height: 20), // Jarak antara RadioListTile
+        _buildRadioButton(
+          title: 'Minuman',
           value: Kategori.MINUMAN,
-          groupValue: widget.selectedKategori,
-          onChanged: widget.onKategoriSelected,
         ),
-        RadioListTile<Kategori>(
-          title: const Text("Kue"),
+        SizedBox(height: 20), // Jarak antara RadioListTile
+        _buildRadioButton(
+          title: 'Kue',
           value: Kategori.KUE,
-          groupValue: widget.selectedKategori,
-          onChanged: widget.onKategoriSelected,
         ),
-        RadioListTile<Kategori>(
-          title: const Text("Dessert"),
+        SizedBox(height: 20), // Jarak antara RadioListTile
+        _buildRadioButton(
+          title: 'Dessert',
           value: Kategori.DESSERT,
-          groupValue: widget.selectedKategori,
-          onChanged: widget.onKategoriSelected,
         ),
-        RadioListTile<Kategori>(
-          title: const Text("Snack"),
+        SizedBox(height: 20), // Jarak antara RadioListTile
+        _buildRadioButton(
+          title: 'Snack',
           value: Kategori.SNACK,
-          groupValue: widget.selectedKategori,
-          onChanged: widget.onKategoriSelected,
         ),
-        RadioListTile<Kategori>(
-          title: const Text("Bread"),
+        SizedBox(height: 20), // Jarak antara RadioListTile
+        _buildRadioButton(
+          title: 'Bread',
           value: Kategori.BREAD,
-          groupValue: widget.selectedKategori,
-          onChanged: widget.onKategoriSelected,
         ),
-        RadioListTile<Kategori>(
-          title: const Text("Tea"),
+        SizedBox(height: 20), // Jarak antara RadioListTile
+        _buildRadioButton(
+          title: 'Tea',
           value: Kategori.TEA,
-          groupValue: widget.selectedKategori,
-          onChanged: widget.onKategoriSelected,
         ),
-        RadioListTile<Kategori>(
-          title: const Text("Coffee"),
+        SizedBox(height: 20), // Jarak antara RadioListTile
+        _buildRadioButton(
+          title: 'Coffee',
           value: Kategori.COFFEE,
-          groupValue: widget.selectedKategori,
-          onChanged: widget.onKategoriSelected,
         ),
-        RadioListTile<Kategori>(
-          title: const Text("Juice"),
+        SizedBox(height: 20), // Jarak antara RadioListTile
+        _buildRadioButton(
+          title: 'Milk',
+          value: Kategori.MILK,
+        ),
+        SizedBox(height: 20), // Jarak antara RadioListTile
+        _buildRadioButton(
+          title: 'Juice',
           value: Kategori.JUICE,
-          groupValue: widget.selectedKategori,
-          onChanged: widget.onKategoriSelected,
         ),
       ],
+    );
+  }
+
+  Widget _buildRadioButton({
+    required String title,
+    required Kategori value,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(50),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 3), // changes position of shadow
+          ),
+        ],
+      ),
+      child: Material(
+        borderRadius: BorderRadius.circular(50),
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(50),
+          onTap: () {
+            widget.onKategoriSelected(value);
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            child: Row(
+              children: [
+                Radio<Kategori>(
+                  value: value,
+                  groupValue: widget.selectedKategori,
+                  onChanged: (selectedValue) {
+                    widget.onKategoriSelected(selectedValue);
+                  },
+                ),
+                SizedBox(width: 8),
+                Text(
+                  title,
+                  style: GoogleFonts.roboto(
+                    fontSize: 13,
+                    color: Color.fromARGB(255, 66, 66, 66),
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

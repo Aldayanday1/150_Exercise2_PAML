@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kulinerjogja/presentation/controllers/user_controller.dart';
+import 'package:kulinerjogja/presentation/views/admin_page/dashboard_screen/dashboard_admin.dart';
 
 class AdminLoginPage extends StatefulWidget {
   @override
@@ -25,10 +26,10 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
             .showSnackBar(SnackBar(content: Text(result)));
 
         // Navigate to home page after successful login
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => ()),
-        // );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => DashboardAdmin()),
+        );
       } catch (e) {
         String errorMessage = e.toString();
         if (errorMessage.startsWith('Exception: ')) {

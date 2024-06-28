@@ -4,6 +4,7 @@ import 'package:kulinerjogja/presentation/controllers/user_controller.dart';
 import 'package:kulinerjogja/presentation/views/auth_pages/register_page/token_page.dart';
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
@@ -28,7 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
     });
   }
 
-//  validasi registrtasi 
+//  validasi registrtasi
   void _register() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
@@ -39,7 +40,9 @@ class _RegisterPageState extends State<RegisterPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => TokenInputPage(email: _user.email!)),
+              builder: (context) => TokenInputPage(
+                    email: _user.email!,
+                  )),
         );
       } catch (e) {
         ScaffoldMessenger.of(context)

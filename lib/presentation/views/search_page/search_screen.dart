@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class SearchPage extends StatefulWidget {
   final KulinerService kulinerService;
+
   SearchPage({required this.kulinerService});
 
   @override
@@ -302,7 +303,10 @@ class _SearchPageState extends State<SearchPage> {
   void _navigateToDetailPage(Kuliner kuliner) async {
     await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => DetailView(kuliner: kuliner)),
+      MaterialPageRoute(
+          builder: (context) => DetailView(
+                kuliner: kuliner,
+              )),
     );
   }
 }

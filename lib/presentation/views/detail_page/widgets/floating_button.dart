@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kulinerjogja/domain/model/kuliner.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:kulinerjogja/presentation/controllers/kuliner_controller.dart';
+import 'package:kulinerjogja/presentation/views/auth_pages/login_user_page/login_page.dart';
 import 'package:kulinerjogja/presentation/views/home_page/home_screen.dart';
 import 'dart:ui'; // Import dart:ui untuk menggunakan ImageFilter
 
@@ -113,6 +114,20 @@ class _ActionButtonsState extends State<ActionButtons> {
                               ),
                             ),
                           ).show(context);
+                          // -------BREAK SESSION-------
+                        } else if (result['message'] ==
+                            'Token tidak valid. Silakan login kembali.') {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LoginPage(),
+                              settings: RouteSettings(
+                                arguments:
+                                    'Session habis, silakan login kembali',
+                              ),
+                            ),
+                            (Route<dynamic> route) => false,
+                          );
                         } else {
                           // Tampilkan Flushbar dari atas
                           Flushbar(
