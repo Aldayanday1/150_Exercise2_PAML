@@ -18,9 +18,9 @@ class KulinerStatusCard extends StatelessWidget {
   Color _getStatusColor(String status) {
     switch (status.toUpperCase()) {
       case "PENDING":
-        return Colors.red;
+        return Colors.orange;
       case "PROGRESS":
-        return Colors.yellow;
+        return Colors.blue;
       case "DONE":
         return Colors.green;
       default:

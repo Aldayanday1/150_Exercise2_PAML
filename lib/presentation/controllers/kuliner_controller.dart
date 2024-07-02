@@ -85,7 +85,7 @@ class KulinerController {
     return kulinerService.getKulinerByStatus(status);
   }
 
-  // -------------- GET GRAPH COUNT (LANGSUNG DI GRAPH WIDGET SCREEN)) -------------------
+  // -------------- GET GRAPH COUNT (LANGSUNG DI GRAPH WIDGET SCREEN) -------------------
 
   // -------------- PUT -------------------
 

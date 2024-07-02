@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:kulinerjogja/presentation/views/auth_pages/login_admin_page/login_page.dart';
 import 'package:kulinerjogja/presentation/views/auth_pages/login_user_page/login_page.dart';
+import 'package:kulinerjogja/presentation/views/auth_pages/login_user_page/token_page.dart';
+import 'package:kulinerjogja/presentation/views/auth_pages/register_page/email_verified_page.dart';
 import 'package:kulinerjogja/presentation/views/auth_pages/register_page/register_page.dart';
+import 'package:kulinerjogja/presentation/views/auth_pages/register_page/token_page.dart';
+import 'package:kulinerjogja/presentation/views/auth_pages/welcome_page/welcome_page.dart';
+import 'package:kulinerjogja/presentation/views/home_page/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -22,14 +28,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Color.fromARGB(255, 255, 234, 255),
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Color.fromARGB(255, 255, 234, 255),
+          ),
+          useMaterial3: true,
         ),
-        useMaterial3: true,
-      ),
-      home: LoginPage(), // Gunakan HiddenDrawer sebagai home
-    );
+        home: EmailVerifiedPage());
   }
 }

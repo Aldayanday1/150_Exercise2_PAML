@@ -4,6 +4,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kulinerjogja/domain/model/daily_graph.dart';
+import 'package:kulinerjogja/presentation/views/auth_pages/login_admin_page/login_page.dart';
+import 'package:kulinerjogja/presentation/views/auth_pages/login_user_page/login_page.dart';
 
 class KulinerChart extends StatefulWidget {
   const KulinerChart({Key? key, required this.futureKulinerGraph})
@@ -16,6 +18,14 @@ class KulinerChart extends StatefulWidget {
 }
 
 class _KulinerChartState extends State<KulinerChart> {
+  // ------------------- SNACKBAR SESSION BREAK -------------------
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<KulinerDaily>>(
@@ -24,6 +34,21 @@ class _KulinerChartState extends State<KulinerChart> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
+          // ------- BREAK SESSION GRAPH -------
+          // Jika error karena token tidak valid, arahkan ke halaman login
+          if (snapshot.error.toString().contains('Token tidak valid')) {
+            Future.microtask(
+              () {
+                _showSnackBar('Session habis, silakan login kembali');
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => AdminLoginPage()),
+                  (Route<dynamic> route) => false,
+                );
+              },
+            );
+            return SizedBox.shrink(); // Mengembalikan widget kosong sementara
+          }
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return Center(child: Text('No data available'));

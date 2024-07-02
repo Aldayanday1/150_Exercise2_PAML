@@ -188,7 +188,7 @@ class _EditKulinerState extends State<EditKuliner> {
               Stack(
                 children: [
                   Hero(
-                    tag: 'unique_tag_hero_${widget.kuliner.id}',
+                    tag: 'unique_tag_2_${widget.kuliner.id}',
                     child: ClipPath(
                       clipper: BottomHalfCircleClipper(),
                       child: Container(

@@ -2,10 +2,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:kulinerjogja/domain/model/kuliner.dart';
-import 'package:kulinerjogja/presentation/views/detail_page/detail_screen.dart';
+import 'package:kulinerjogja/presentation/views/admin_page/edit_pengaduan/edit_pengaduan_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-Widget buildKulinerCard(BuildContext context, Kuliner kuliner) {
+Widget buildKulinerCardAdmin(BuildContext context, Kuliner kuliner) {
   // ----------- STATUS COLOR TEXT -----------
 
   Color statusColor;
@@ -28,7 +28,7 @@ Widget buildKulinerCard(BuildContext context, Kuliner kuliner) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => DetailView(
+          builder: (context) => EditPengaduan(
             kuliner: kuliner,
           ),
         ),
@@ -55,7 +55,7 @@ Widget buildKulinerCard(BuildContext context, Kuliner kuliner) {
             child: Row(
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(11),
+                  borderRadius: BorderRadius.circular(10),
                   child: Image.network(
                     kuliner.gambar,
                     width: 85.0,

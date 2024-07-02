@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:kulinerjogja/domain/model/status_laporan.dart';
 import 'package:kulinerjogja/domain/model/user.dart';
 import 'package:kulinerjogja/domain/model/user_profile.dart';
 
@@ -214,6 +215,45 @@ class ApiService {
     } else {
       throw Exception(
           'Gagal memperbarui profil pengguna: ${responseData.body}');
+    }
+  }
+
+  // ------------------- UPDATE STATUS LAPORAN (ADMIN) -------------------
+
+  Future<void> updateStatusLaporan(
+      int kulinerId, StatusLaporan statusLaporan) async {
+    try {
+      // Mengambil token dari secure storage
+      final token = await secureStorage.read(key: 'jwt_token');
+      print(
+          'Get JWT from secureStorage (update status laporan - admin): $token');
+
+      if (token == null || token.isEmpty) {
+        throw Exception('Token tidak ditemukan di secure storage');
+      }
+
+      // Lanjutkan permintaan HTTP dengan token yang valid
+      final response = await http.put(
+        Uri.parse('$baseUrl/update-status/$kulinerId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(statusLaporan.toJson()),
+      );
+
+      if (response.statusCode == 200) {
+        print('Status laporan berhasil diperbarui');
+      } else if (response.statusCode == 401) {
+        // Token tidak valid atau tidak ada, arahkan pengguna kembali ke halaman login
+        await secureStorage.delete(
+            key: 'jwt_token'); // Hapus token dari storage
+        print('Token has been Revoked (expired): $secureStorage');
+        throw Exception('Token tidak valid. Silakan login kembali.');
+      }
+    } catch (e) {
+      print('Gagal memperbarui status laporan: $e');
+      throw Exception('Gagal memperbarui status laporan: $e');
     }
   }
 

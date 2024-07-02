@@ -177,7 +177,7 @@ class _MyKulinerPageState extends State<MyKulinerPage> {
                 children: [
                   Expanded(
                     child: Container(
-                      height: 29,
+                      height: 31,
                       decoration: BoxDecoration(
                         color: Colors.green.withOpacity(0.8),
                         borderRadius: BorderRadius.only(
@@ -224,7 +224,7 @@ class _MyKulinerPageState extends State<MyKulinerPage> {
                   const SizedBox(width: 1),
                   Expanded(
                     child: Container(
-                      height: 29,
+                      height: 31,
                       decoration: BoxDecoration(
                         color: Colors.red.withOpacity(0.8),
                         borderRadius: const BorderRadius.only(

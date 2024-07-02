@@ -38,7 +38,7 @@ class _StaticMapState extends State<StaticMapForm> {
     return Stack(
       children: [
         ClipRRect(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(11),
           child: GoogleMap(
             initialCameraPosition: CameraPosition(
               target: widget.location,

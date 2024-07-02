@@ -86,6 +86,8 @@ class UserController {
     }
   }
 
+  // ----------------------- STATUS LAPORAN -----------------------
+
   // ----------------------- CHECK OTP STATUS --------------------------
 
   Future<bool> checkOtpStatus(String email) async {

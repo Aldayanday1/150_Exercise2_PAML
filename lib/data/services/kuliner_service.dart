@@ -55,7 +55,7 @@ class KulinerService {
     }
   }
 
-  // -------------- GET KULINER BY ID -------------------
+  // -------------- GET KULINER BY ID  -------------------
 
   Future<List<Kuliner>> getMyKuliner() async {
     // Mengambil token dari secure storage
@@ -87,7 +87,7 @@ class KulinerService {
     }
   }
 
-  // ------------ GET KULINER BY STATUS -----------------
+  // ------------ GET KULINER BY STATUS (ADMIN) -----------------
 
   Future<List<Kuliner>> getKulinerByStatus(String status) async {
     final response =
@@ -100,30 +100,54 @@ class KulinerService {
     }
   }
 
-  // -------------- GET GRAPH COUNT -------------------
+  // ------------ GET GRAPH COUNT (ADMIN) -----------------
 
   Future<List<KulinerDaily>> fetchDailyKulinerCount() async {
-    final response = await http.get(Uri.parse('$baseUrl/daily-count'));
+    try {
+      // Mengambil token dari secure storage
+      final token = await secureStorage.read(key: 'jwt_token');
+      print('Get JWT from secureStorage (get graph count - admin): $token');
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> json = jsonDecode(response.body);
+      if (token == null || token.isEmpty) {
+        throw Exception('Token tidak ditemukan di secure storage');
+      }
 
-      List<KulinerDaily> kulinerList = [
-        'MONDAY',
-        'TUESDAY',
-        'WEDNESDAY',
-        'THURSDAY',
-        'FRIDAY',
-        'SATURDAY',
-        'SUNDAY'
-      ].map((day) {
-        int count = json[day] ?? 0; // default value is 0 if data not exist
-        return KulinerDaily(day: day, count: count);
-      }).toList();
+      // Lanjutkan permintaan HTTP dengan token yang valid
+      final response = await http.get(
+        Uri.parse('$baseUrl/daily-count'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
 
-      return kulinerList;
-    } else {
-      throw Exception('Failed to load daily kuliner count');
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> json = jsonDecode(response.body);
+
+        List<KulinerDaily> kulinerList = [
+          'MONDAY',
+          'TUESDAY',
+          'WEDNESDAY',
+          'THURSDAY',
+          'FRIDAY',
+          'SATURDAY',
+          'SUNDAY'
+        ].map((day) {
+          int count = json[day] ?? 0; // default value is 0 if data not exist
+          return KulinerDaily(day: day, count: count);
+        }).toList();
+
+        return kulinerList;
+      } else if (response.statusCode == 401) {
+        // Token tidak valid atau tidak ada, arahkan pengguna kembali ke halaman login
+        await secureStorage.delete(
+            key: 'jwt_token'); // Hapus token dari storage
+        print('Token has been Revoked (expired): $secureStorage');
+        throw Exception('Token tidak valid. Silakan login kembali.');
+      } else {
+        throw Exception(
+            'Gagal memuat jumlah data kuliner per hari: ${response.body}');
+      }
+    } catch (e) {
+      throw Exception(
+          'Terjadi kesalahan saat memuat jumlah data kuliner per hari: $e');
     }
   }
 

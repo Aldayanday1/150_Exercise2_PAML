@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kulinerjogja/domain/model/kuliner.dart';
+import 'package:kulinerjogja/presentation/views/admin_page/card_kuliner.dart';
 import 'package:kulinerjogja/presentation/views/home_page/widgets/card_kuliner.dart';
 
 class CategoryPage extends StatelessWidget {
@@ -30,7 +31,7 @@ class CategoryPage extends StatelessWidget {
                 Kuliner kuliner = filteredKulinerList[index];
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: buildKulinerCard(context, kuliner),
+                  child: buildKulinerCardAdmin(context, kuliner),
                 );
               },
             ),

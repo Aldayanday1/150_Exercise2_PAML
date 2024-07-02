@@ -29,7 +29,7 @@ class _DetailViewState extends State<DetailView> {
 
     switch (statusText.toUpperCase()) {
       case 'PROGRESS':
-        statusColor = Colors.yellow;
+        statusColor = Colors.blue;
         statusText = 'In Progress';
         break;
       case 'DONE':
@@ -37,7 +37,7 @@ class _DetailViewState extends State<DetailView> {
         statusText = 'Done';
         break;
       default:
-        statusColor = Colors.red;
+        statusColor = Colors.orange;
         statusText = 'Pending';
     }
 
@@ -51,7 +51,7 @@ class _DetailViewState extends State<DetailView> {
               children: [
                 // ----------- BACKGROUND IMAGE -----------
                 Hero(
-                  tag: 'unique_tag_hero_${widget.kuliner.id}',
+                  tag: 'unique_tag_1${widget.kuliner.id}',
                   child: ClipPath(
                     clipper: BottomHalfCircleClipper(),
                     child: Container(
@@ -151,7 +151,7 @@ class _DetailViewState extends State<DetailView> {
                         SizedBox(width: 16),
                         Container(
                           height: 1,
-                          width: 200, // Lebar garis horizontal di samping teks
+                          width: 239, // Lebar garis horizontal di samping teks
                           color: Colors.grey[400], // Warna garis horizontal
                         ),
                       ],
@@ -178,10 +178,13 @@ class _DetailViewState extends State<DetailView> {
 
                   Row(
                     children: [
-                      Icon(
-                        Icons.location_on,
-                        color: Color.fromARGB(255, 66, 66, 66),
-                        size: 16,
+                      Image.asset(
+                        'assets/location.png',
+                        color: Color.fromARGB(255, 66, 66,
+                            66), // Opsi: Tambahkan untuk menerapkan warna ke gambar
+                        width:
+                            16, // Opsi: Sesuaikan ukuran gambar sesuai kebutuhan
+                        height: 16,
                       ),
                       SizedBox(width: 4),
                       Expanded(

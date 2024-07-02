@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kulinerjogja/domain/model/kuliner.dart';
 import 'package:kulinerjogja/presentation/controllers/kuliner_controller.dart';
-import 'package:kulinerjogja/presentation/views/home_page/widgets/card_kuliner.dart';
+import 'package:kulinerjogja/presentation/views/admin_page/card_kuliner.dart';
 
 class KulinerStatusPage extends StatelessWidget {
   final String status;
@@ -48,7 +48,7 @@ class KulinerStatusPage extends StatelessWidget {
                 final kuliner = data[index];
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: buildKulinerCard(context, kuliner),
+                  child: buildKulinerCardAdmin(context, kuliner),
                 );
               },
             );
