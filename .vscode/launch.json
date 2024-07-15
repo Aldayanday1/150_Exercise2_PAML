@@ -5,24 +5,24 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "kulinerjogja",
+      "name": "sistem_pengaduan",
       "request": "launch",
       "type": "dart"
     },
     {
-      "name": "kulinerjogja (profile mode)",
+      "name": "sistem_pengaduan (profile mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
     },
     {
-      "name": "kulinerjogja (release mode)",
+      "name": "sistem_pengaduan (release mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release"
     },
     {
-      "name": "kulinerjogja (Pixel 6a API 30)",
+      "name": "sistem_pengaduan (Pixel 6a API 30)",
       "request": "launch",
       "type": "dart",
       "deviceId": "emulator-5554"
@@ -37,7 +37,7 @@
   "compounds": [
     {
       "name": "All Devices",
-      "configurations": ["windows devices", "kulinerjogja (Pixel 6a API 30)"]
+      "configurations": ["windows devices", "sistem_pengaduan (Pixel 6a API 30)"]
     }
   ]
 }

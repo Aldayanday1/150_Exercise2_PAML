@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
-        android:label="kulinerjogja"
+        android:label="sistem_pengaduan"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

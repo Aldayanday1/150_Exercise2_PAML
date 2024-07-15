@@ -3,21 +3,20 @@ import 'dart:ui';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kulinerjogja/domain/model/daily_graph.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/login_admin_page/login_page.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/login_user_page/login_page.dart';
+import 'package:sistem_pengaduan/domain/model/daily_graph.dart';
+import 'package:sistem_pengaduan/presentation/views/auth_pages/login_admin_page/login_page.dart';
 
-class KulinerChart extends StatefulWidget {
-  const KulinerChart({Key? key, required this.futureKulinerGraph})
+class PengaduanChart extends StatefulWidget {
+  const PengaduanChart({Key? key, required this.futurePengaduanGraph})
       : super(key: key);
 
-  final Future<List<KulinerDaily>> futureKulinerGraph;
+  final Future<List<PengaduanDaily>> futurePengaduanGraph;
 
   @override
-  _KulinerChartState createState() => _KulinerChartState();
+  _PengaduanChartState createState() => _PengaduanChartState();
 }
 
-class _KulinerChartState extends State<KulinerChart> {
+class _PengaduanChartState extends State<PengaduanChart> {
   // ------------------- SNACKBAR SESSION BREAK -------------------
 
   void _showSnackBar(String message) {
@@ -28,8 +27,8 @@ class _KulinerChartState extends State<KulinerChart> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<KulinerDaily>>(
-      future: widget.futureKulinerGraph,
+    return FutureBuilder<List<PengaduanDaily>>(
+      future: widget.futurePengaduanGraph,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -59,7 +58,7 @@ class _KulinerChartState extends State<KulinerChart> {
     );
   }
 
-  Widget _buildChart(List<KulinerDaily> kulinerList) {
+  Widget _buildChart(List<PengaduanDaily> pengaduanList) {
     return AspectRatio(
       aspectRatio: 1.3,
       child: Container(
@@ -109,7 +108,7 @@ class _KulinerChartState extends State<KulinerChart> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: LineChart(
-                            _buildLineChartData(kulinerList),
+                            _buildLineChartData(pengaduanList),
                             swapAnimationDuration:
                                 const Duration(milliseconds: 250),
                           ),
@@ -127,7 +126,7 @@ class _KulinerChartState extends State<KulinerChart> {
     );
   }
 
-  LineChartData _buildLineChartData(List<KulinerDaily> kulinerList) {
+  LineChartData _buildLineChartData(List<PengaduanDaily> pengaduanList) {
     return LineChartData(
       // ------------ GARIS VERTIKAL DAN HORIZONTAL GRAFIK ----------
 
@@ -218,7 +217,7 @@ class _KulinerChartState extends State<KulinerChart> {
       ),
       lineBarsData: [
         LineChartBarData(
-          spots: kulinerList
+          spots: pengaduanList
               .asMap()
               .entries
               .map((e) => FlSpot(e.key.toDouble(), e.value.count.toDouble()))

@@ -2,9 +2,9 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/login_admin_page/login_page.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/login_user_page/login_page.dart';
 import 'package:lottie/lottie.dart';
+import 'package:sistem_pengaduan/presentation/views/auth_pages/login_admin_page/login_page.dart';
+import 'package:sistem_pengaduan/presentation/views/auth_pages/login_user_page/login_page.dart';
 
 class WelcomePage extends StatelessWidget {
   @override

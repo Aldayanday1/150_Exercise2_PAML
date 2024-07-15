@@ -2,17 +2,17 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kulinerjogja/domain/model/daily_graph.dart';
-import 'package:kulinerjogja/presentation/controllers/kuliner_controller.dart';
-import 'package:kulinerjogja/domain/model/kuliner.dart';
-import 'package:kulinerjogja/presentation/controllers/user_controller.dart';
-import 'package:kulinerjogja/presentation/views/admin_page/category_screen/widgets/category_grid_widget.dart';
-import 'package:kulinerjogja/presentation/views/admin_page/dashboard_screen/widgets/graph_widget.dart';
-import 'package:kulinerjogja/presentation/views/admin_page/status_screen/widgets/status_widget.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/login_admin_page/login_page.dart';
-import 'package:kulinerjogja/presentation/views/search_page/widgets/search_widget.dart';
+import 'package:sistem_pengaduan/domain/model/daily_graph.dart';
+import 'package:sistem_pengaduan/domain/model/pengaduan.dart';
+import 'package:sistem_pengaduan/presentation/controllers/pengaduan_controller.dart';
+import 'package:sistem_pengaduan/presentation/controllers/user_controller.dart';
+import 'package:sistem_pengaduan/presentation/views/admin_page/category_screen/widgets/category_grid_widget.dart';
+import 'package:sistem_pengaduan/presentation/views/admin_page/dashboard_screen/widgets/graph_widget.dart';
+import 'package:sistem_pengaduan/presentation/views/admin_page/status_screen/widgets/status_widget.dart';
+import 'package:sistem_pengaduan/presentation/views/auth_pages/login_admin_page/login_page.dart';
+import 'package:sistem_pengaduan/presentation/views/search_page/widgets/search_widget.dart';
 
-import '../../../../data/services/kuliner_service.dart';
+import '../../../../data/services/pengaduan_service.dart';
 
 class DashboardAdmin extends StatefulWidget {
   const DashboardAdmin({Key? key}) : super(key: key);
@@ -27,34 +27,34 @@ class _HomeViewState extends State<DashboardAdmin> {
   @override
   void initState() {
     super.initState();
-    _loadAllKuliner();
+    _loadAllPengaduan();
     _refreshGraph();
   }
 
   Future<void> _refreshData() async {
-    await _loadAllKuliner();
+    await _loadAllPengaduan();
     await _refreshGraph();
     setState(() {});
   }
 
   // --------------------------- LOAD ALL DATA ---------------------------
 
-  List<Kuliner>? _allKuliner;
+  List<Pengaduan>? _allPengaduan;
 
-  final KulinerController _controller = KulinerController();
+  final PengaduanController _controller = PengaduanController();
 
-  Future<void> _loadAllKuliner() async {
-    _allKuliner = await _controller.getAllKuliner();
-    print('Total kuliner: ${_allKuliner?.length ?? 0}');
+  Future<void> _loadAllPengaduan() async {
+    _allPengaduan = await _controller.getAllPengaduan();
+    print('Total pengaduan: ${_allPengaduan?.length ?? 0}');
     setState(() {});
   }
 
   // ------------------- ANIMATED GRAPH -------------------
 
-  late Future<List<KulinerDaily>> futureKulinerGraph;
+  late Future<List<PengaduanDaily>> futurePengaduanGraph;
 
   Future<void> _refreshGraph() async {
-    futureKulinerGraph = KulinerService().fetchDailyKulinerCount();
+    futurePengaduanGraph = PengaduanService().fetchDailyPengaduanCount();
   }
 
   // ------------------- SNACKBAR SESSION BREAK -------------------
@@ -182,15 +182,15 @@ class _HomeViewState extends State<DashboardAdmin> {
 
                         // // -------------------- SLIDE CARDS --------------------
 
-                        // AutoSlideCardsAdmin(kulinerList: _allKuliner ?? []),
+                        // AutoSlideCardsAdmin(pengaduanList: _allPengaduan ?? []),
 
-                        // ------------------- TOTAL KULINER -------------------
+                        // ------------------- TOTAL PENGADUAN -------------------
 
                         Padding(
                           padding:
                               EdgeInsets.only(top: 20, bottom: 20, left: 22),
-                          child: FutureBuilder<List<Kuliner>>(
-                            future: _controller.getAllKuliner(),
+                          child: FutureBuilder<List<Pengaduan>>(
+                            future: _controller.getAllPengaduan(),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
@@ -200,14 +200,14 @@ class _HomeViewState extends State<DashboardAdmin> {
                                 return Center(
                                     child: Text('Error: ${snapshot.error}'));
                               } else if (snapshot.hasData) {
-                                final totalKuliner = snapshot.data!.length;
+                                final totalPengaduan = snapshot.data!.length;
                                 return Padding(
                                   padding: const EdgeInsets.only(left: 7.0),
                                   child: RichText(
                                       text: TextSpan(
                                     children: [
                                       TextSpan(
-                                        text: '$totalKuliner',
+                                        text: '$totalPengaduan',
                                         style: GoogleFonts.roboto(
                                           fontSize:
                                               46, // Ukuran teks untuk angka
@@ -245,8 +245,8 @@ class _HomeViewState extends State<DashboardAdmin> {
 
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: KulinerChart(
-                            futureKulinerGraph: futureKulinerGraph,
+                          child: PengaduanChart(
+                            futurePengaduanGraph: futurePengaduanGraph,
                           ),
                         ),
 
@@ -265,9 +265,9 @@ class _HomeViewState extends State<DashboardAdmin> {
                           ),
                         ),
 
-                        KulinerStatusCard(status: "PENDING"),
-                        KulinerStatusCard(status: "PROGRESS"),
-                        KulinerStatusCard(status: "DONE"),
+                        PengaduanStatusCard(status: "PENDING"),
+                        PengaduanStatusCard(status: "PROGRESS"),
+                        PengaduanStatusCard(status: "DONE"),
 
                         // ------------------- LIST OF GRID -------------------
 
@@ -282,8 +282,8 @@ class _HomeViewState extends State<DashboardAdmin> {
                             ),
                           ),
                         ),
-                        FutureBuilder<List<Kuliner>>(
-                          future: _controller.getAllKuliner(),
+                        FutureBuilder<List<Pengaduan>>(
+                          future: _controller.getAllPengaduan(),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
@@ -296,7 +296,7 @@ class _HomeViewState extends State<DashboardAdmin> {
                             } else {
                               // Once data is loaded, show CategoryGrid
                               return CategoryGrid(
-                                  kulinerList: _allKuliner ?? []);
+                                  pengaduanList: _allPengaduan ?? []);
                             }
                           },
                         ),

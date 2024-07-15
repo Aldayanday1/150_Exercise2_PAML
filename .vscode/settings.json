@@ -1,4 +1,5 @@
 {
-  "cmake.sourceDirectory": "D:/Semester 5/PENGEMBANGAN APLIKASI MOBILE/kulinerjogja/build/windows/x64/_deps/nuget-subbuild",
-  "cmake.ignoreCMakeListsMissing": true
+  "cmake.sourceDirectory": "D:/Semester 6/PROJECT/sistem_pengaduan_fe/build/windows/x64/_deps/nuget-subbuild",
+  "cmake.ignoreCMakeListsMissing": true,
+  "java.configuration.updateBuildConfiguration": "interactive"
 }

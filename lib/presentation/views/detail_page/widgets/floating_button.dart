@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:kulinerjogja/domain/model/kuliner.dart';
 import 'package:another_flushbar/flushbar.dart';
-import 'package:kulinerjogja/presentation/controllers/kuliner_controller.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/login_user_page/login_page.dart';
-import 'package:kulinerjogja/presentation/views/home_page/home_screen.dart';
-import 'dart:ui'; // Import dart:ui untuk menggunakan ImageFilter
+import 'dart:ui';
+
+import 'package:sistem_pengaduan/domain/model/pengaduan.dart';
+import 'package:sistem_pengaduan/presentation/controllers/pengaduan_controller.dart';
+import 'package:sistem_pengaduan/presentation/views/auth_pages/login_user_page/login_page.dart';
+import 'package:sistem_pengaduan/presentation/views/home_page/home_screen.dart'; // Import dart:ui untuk menggunakan ImageFilter
 
 class ActionButtons extends StatefulWidget {
-  final Kuliner kuliner;
+  final Pengaduan pengaduan;
 
-  ActionButtons({required this.kuliner});
+  ActionButtons({required this.pengaduan});
 
   @override
   State<ActionButtons> createState() => _ActionButtonsState();
 }
 
 class _ActionButtonsState extends State<ActionButtons> {
-  final KulinerController _controller = KulinerController();
+  final PengaduanController _controller = PengaduanController();
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +50,8 @@ class _ActionButtonsState extends State<ActionButtons> {
                     TextButton(
                       onPressed: () async {
                         var result = await _controller
-                            // menerima nilai dari id dari parameter onPressedDelete -> utk kemudian data "id" dari variable kuliner mana sih yg ingin dihapus
-                            .deleteKuliner(widget.kuliner.id);
+                            // menerima nilai dari id dari parameter onPressedDelete -> utk kemudian data "id" dari variable pengaduan mana sih yg ingin dihapus
+                            .deletePengaduan(widget.pengaduan.id);
                         // Navigasi ke HomeView setelah delete berhasil
                         Navigator.pushReplacement(
                           context,

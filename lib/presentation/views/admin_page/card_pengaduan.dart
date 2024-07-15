@@ -1,15 +1,15 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:kulinerjogja/domain/model/kuliner.dart';
-import 'package:kulinerjogja/presentation/views/admin_page/edit_pengaduan/edit_pengaduan_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sistem_pengaduan/domain/model/pengaduan.dart';
+import 'package:sistem_pengaduan/presentation/views/admin_page/edit_pengaduan/edit_pengaduan_screen.dart';
 
-Widget buildKulinerCardAdmin(BuildContext context, Kuliner kuliner) {
+Widget buildPengaduanCardAdmin(BuildContext context, Pengaduan pengaduan) {
   // ----------- STATUS COLOR TEXT -----------
 
   Color statusColor;
-  String statusText = kuliner.status ?? 'PENDING';
+  String statusText = pengaduan.status ?? 'PENDING';
 
   switch (statusText.toUpperCase()) {
     case 'PROGRESS':
@@ -28,8 +28,8 @@ Widget buildKulinerCardAdmin(BuildContext context, Kuliner kuliner) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => EditPengaduan(
-            kuliner: kuliner,
+          builder: (context) => EditPengaduanAdmin(
+            pengaduan: pengaduan,
           ),
         ),
       );
@@ -57,7 +57,7 @@ Widget buildKulinerCardAdmin(BuildContext context, Kuliner kuliner) {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.network(
-                    kuliner.gambar,
+                    pengaduan.gambar,
                     width: 85.0,
                     height: 110.0,
                     fit: BoxFit.cover,
@@ -73,7 +73,7 @@ Widget buildKulinerCardAdmin(BuildContext context, Kuliner kuliner) {
                       Padding(
                         padding: const EdgeInsets.only(right: 30),
                         child: Text(
-                          kuliner.nama,
+                          pengaduan.judul,
                           style: GoogleFonts.roboto(
                             fontSize: 16.0,
                             color: Color.fromARGB(255, 66, 66, 66),
@@ -90,7 +90,7 @@ Widget buildKulinerCardAdmin(BuildContext context, Kuliner kuliner) {
                       Padding(
                         padding: const EdgeInsets.only(right: 30.0),
                         child: Text(
-                          kuliner.deskripsi,
+                          pengaduan.deskripsi,
                           style: GoogleFonts.roboto(
                             fontSize: 12.0,
                             color: Color.fromARGB(255, 66, 66, 66),
@@ -116,7 +116,7 @@ Widget buildKulinerCardAdmin(BuildContext context, Kuliner kuliner) {
                               padding:
                                   const EdgeInsets.only(left: 2.0, right: 30),
                               child: Text(
-                                kuliner.alamat,
+                                pengaduan.alamat,
                                 style: GoogleFonts.roboto(
                                   fontSize: 12.0,
                                   color: Color.fromARGB(255, 66, 66, 66),
@@ -135,7 +135,7 @@ Widget buildKulinerCardAdmin(BuildContext context, Kuliner kuliner) {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(25),
                             child: Image.network(
-                              kuliner.profileImagePembuat,
+                              pengaduan.profileImagePembuat,
                               width: 16,
                               height: 16,
                               fit: BoxFit.cover,
@@ -143,7 +143,7 @@ Widget buildKulinerCardAdmin(BuildContext context, Kuliner kuliner) {
                           ),
                           SizedBox(width: 8),
                           Text(
-                            'Dibuat oleh : ${kuliner.namaPembuat}',
+                            'Dibuat oleh : ${pengaduan.namaPembuat}',
                             style: GoogleFonts.roboto(
                               fontSize: 12,
                               color: Color.fromARGB(255, 66, 66, 66),

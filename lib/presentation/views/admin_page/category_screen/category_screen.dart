@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:kulinerjogja/domain/model/kuliner.dart';
-import 'package:kulinerjogja/presentation/views/admin_page/card_kuliner.dart';
-import 'package:kulinerjogja/presentation/views/home_page/widgets/card_kuliner.dart';
+import 'package:sistem_pengaduan/domain/model/pengaduan.dart';
+import 'package:sistem_pengaduan/presentation/views/admin_page/card_pengaduan.dart';
 
 class CategoryPage extends StatelessWidget {
   final Kategori category;
-  final List<Kuliner> kulinerList;
+  final List<Pengaduan> pengaduanList;
 
-  const CategoryPage({required this.category, required this.kulinerList});
+  const CategoryPage({required this.category, required this.pengaduanList});
 
   @override
   Widget build(BuildContext context) {
     // ---------------------- FILTERING LIST ----------------------
 
-    final filteredKulinerList =
-        kulinerList.where((kuliner) => kuliner.kategori == category).toList();
+    final filteredPengaduanList = pengaduanList
+        .where((pengaduan) => pengaduan.kategori == category)
+        .toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -23,15 +23,15 @@ class CategoryPage extends StatelessWidget {
 
       // ---------------  TAMPILAN DARI CATEGORY CARD ---------------
 
-      body: filteredKulinerList.isEmpty
-          ? Center(child: Text("No kuliner available in this category"))
+      body: filteredPengaduanList.isEmpty
+          ? Center(child: Text("No Pengaduan available in this category"))
           : ListView.builder(
-              itemCount: filteredKulinerList.length,
+              itemCount: filteredPengaduanList.length,
               itemBuilder: (context, index) {
-                Kuliner kuliner = filteredKulinerList[index];
+                Pengaduan pengaduan = filteredPengaduanList[index];
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: buildKulinerCardAdmin(context, kuliner),
+                  child: buildPengaduanCardAdmin(context, pengaduan),
                 );
               },
             ),

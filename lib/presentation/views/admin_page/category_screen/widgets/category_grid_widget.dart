@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
 
-import 'package:kulinerjogja/domain/model/kuliner.dart';
-import 'package:kulinerjogja/presentation/views/admin_page/category_screen/category_screen.dart';
+import 'package:sistem_pengaduan/domain/model/pengaduan.dart';
+import 'package:sistem_pengaduan/presentation/views/admin_page/category_screen/category_screen.dart';
 
 class CategoryGrid extends StatelessWidget {
-  const CategoryGrid({super.key, required this.kulinerList});
+  const CategoryGrid({super.key, required this.pengaduanList});
 
-  final List<Kuliner> kulinerList;
+  final List<Pengaduan> pengaduanList;
 
   void _navigateToCategoryPage(BuildContext context, Kategori category) {
     Navigator.push(
@@ -16,7 +16,7 @@ class CategoryGrid extends StatelessWidget {
       MaterialPageRoute(
         builder: (context) => CategoryPage(
           category: category,
-          kulinerList: kulinerList,
+          pengaduanList: pengaduanList,
         ),
       ),
     );
@@ -29,7 +29,7 @@ class CategoryGrid extends StatelessWidget {
     final Map<Kategori, int> categoryCounts = {};
     for (var category in categories) {
       categoryCounts[category] =
-          kulinerList.where((kuliner) => kuliner.kategori == category).length;
+          pengaduanList.where((pengaduan) => pengaduan.kategori == category).length;
     }
 
     return Padding(

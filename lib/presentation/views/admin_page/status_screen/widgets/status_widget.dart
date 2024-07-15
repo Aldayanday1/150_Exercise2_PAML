@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kulinerjogja/domain/model/kuliner.dart';
-import 'package:kulinerjogja/presentation/controllers/kuliner_controller.dart';
-import 'package:kulinerjogja/presentation/views/admin_page/status_screen/status_screen.dart';
+import 'package:sistem_pengaduan/domain/model/pengaduan.dart';
+import 'package:sistem_pengaduan/presentation/controllers/pengaduan_controller.dart';
+import 'package:sistem_pengaduan/presentation/views/admin_page/status_screen/status_screen.dart';
 
-class KulinerStatusCard extends StatelessWidget {
+class PengaduanStatusCard extends StatelessWidget {
   final String status;
 
-  KulinerStatusCard({required this.status});
+  PengaduanStatusCard({required this.status});
 
-  final KulinerController _statusController = KulinerController();
+  final PengaduanController _statusController = PengaduanController();
 
-  Future<List<Kuliner>> _loadKulinerByStatus() {
-    return _statusController.getKulinerByStatus(status);
+  Future<List<Pengaduan>> _loadPengaduanByStatus() {
+    return _statusController.getPengaduanByStatus(status);
   }
 
   Color _getStatusColor(String status) {
@@ -44,8 +44,8 @@ class KulinerStatusCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color color = _getStatusColor(status);
-    return FutureBuilder<List<Kuliner>>(
-      future: _loadKulinerByStatus(),
+    return FutureBuilder<List<Pengaduan>>(
+      future: _loadPengaduanByStatus(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
@@ -58,7 +58,7 @@ class KulinerStatusCard extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => KulinerStatusPage(status: status),
+                  builder: (context) => PengaduanStatusPage(status: status),
                 ),
               );
             },

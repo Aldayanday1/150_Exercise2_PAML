@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:kulinerjogja/data/services/user_service.dart';
-import 'package:kulinerjogja/domain/model/user.dart';
-import 'package:kulinerjogja/domain/model/user_profile.dart';
+import 'package:sistem_pengaduan/data/services/user_service.dart';
+import 'package:sistem_pengaduan/domain/model/user.dart';
+import 'package:sistem_pengaduan/domain/model/user_profile.dart';
 
 class UserController {
   final ApiService apiService = ApiService();
@@ -85,6 +85,16 @@ class UserController {
       throw e;
     }
   }
+
+  // ------------ UPLOAD IMAGE (ADMIN) -----------------
+
+  // Future<String> uploadImage(int pengaduanId, File imageFile) async {
+  //   try {
+  //     return await apiService.uploadImage(pengaduanId, imageFile);
+  //   } catch (e) {
+  //     throw Exception('Gagal mengunggah gambar: $e');
+  //   }
+  // }
 
   // ----------------------- STATUS LAPORAN -----------------------
 

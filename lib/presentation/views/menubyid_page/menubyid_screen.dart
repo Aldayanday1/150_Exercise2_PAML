@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kulinerjogja/domain/model/kuliner.dart'; // Sesuaikan dengan path model Kuliner Anda
-import 'package:kulinerjogja/presentation/controllers/kuliner_controller.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/login_user_page/login_page.dart';
-import 'package:kulinerjogja/presentation/views/detail_page/detail_screen.dart';
-import 'package:kulinerjogja/presentation/views/edit_page/edit_screen.dart';
-import 'package:kulinerjogja/presentation/views/home_page/home_screen.dart';
+import 'package:sistem_pengaduan/domain/model/pengaduan.dart';
+import 'package:sistem_pengaduan/presentation/controllers/pengaduan_controller.dart';
+import 'package:sistem_pengaduan/presentation/views/admin_page/edit_pengaduan/edit_pengaduan_screen.dart';
+import 'package:sistem_pengaduan/presentation/views/auth_pages/login_user_page/login_page.dart';
+import 'package:sistem_pengaduan/presentation/views/detail_page/detail_screen.dart';
+import 'package:sistem_pengaduan/presentation/views/edit_page/edit_screen.dart';
+import 'package:sistem_pengaduan/presentation/views/home_page/home_screen.dart';
 
-class MyKulinerPage extends StatefulWidget {
-  const MyKulinerPage({super.key});
+class MyPengaduanPage extends StatefulWidget {
+  const MyPengaduanPage({super.key});
 
   @override
-  _MyKulinerPageState createState() => _MyKulinerPageState();
+  _MyPengaduanPageState createState() => _MyPengaduanPageState();
 }
 
-class _MyKulinerPageState extends State<MyKulinerPage> {
-  final KulinerController _userController = KulinerController();
-  late Future<List<Kuliner>> _kulinerFuture;
+class _MyPengaduanPageState extends State<MyPengaduanPage> {
+  final PengaduanController _userController = PengaduanController();
+  late Future<List<Pengaduan>> _pengaduanFuture;
 
   @override
   void initState() {
     super.initState();
-    _kulinerFuture = _userController.getMyKuliner();
+    _pengaduanFuture = _userController.getMyPengaduan();
   }
 
   // ------------------- SNACKBAR SESSION BREAK -------------------
@@ -38,8 +39,8 @@ class _MyKulinerPageState extends State<MyKulinerPage> {
       appBar: AppBar(
         title: Text('Status Laporan'),
       ),
-      body: FutureBuilder<List<Kuliner>>(
-        future: _kulinerFuture,
+      body: FutureBuilder<List<Pengaduan>>(
+        future: _pengaduanFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -62,13 +63,13 @@ class _MyKulinerPageState extends State<MyKulinerPage> {
             }
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('Tidak ada kuliner'));
+            return Center(child: Text('Tidak ada pengaduan'));
           } else {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
-                Kuliner kuliner = snapshot.data![index];
-                return buildKulinerCard(context, kuliner);
+                Pengaduan pengaduan = snapshot.data![index];
+                return buildPengaduanCard(context, pengaduan);
               },
             );
           }
@@ -77,14 +78,14 @@ class _MyKulinerPageState extends State<MyKulinerPage> {
     );
   }
 
-  Widget buildKulinerCard(BuildContext context, Kuliner kuliner) {
+  Widget buildPengaduanCard(BuildContext context, Pengaduan pengaduan) {
     return InkWell(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => DetailView(
-              kuliner: kuliner,
+              pengaduan: pengaduan,
             ),
           ),
         );
@@ -114,7 +115,7 @@ class _MyKulinerPageState extends State<MyKulinerPage> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10.0),
                     child: Image.network(
-                      kuliner.gambar,
+                      pengaduan.gambar,
                       width: 85.0,
                       height: 85.0,
                       fit: BoxFit.cover,
@@ -126,7 +127,7 @@ class _MyKulinerPageState extends State<MyKulinerPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          kuliner.nama,
+                          pengaduan.judul,
                           style: TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold,
@@ -137,7 +138,7 @@ class _MyKulinerPageState extends State<MyKulinerPage> {
                         ),
                         SizedBox(height: 8.0),
                         Text(
-                          kuliner.deskripsi,
+                          pengaduan.deskripsi,
                           style: TextStyle(
                             fontSize: 14.0,
                             color: Colors.black54,
@@ -156,7 +157,7 @@ class _MyKulinerPageState extends State<MyKulinerPage> {
                             SizedBox(width: 4.0),
                             Expanded(
                               child: Text(
-                                kuliner.alamat,
+                                pengaduan.alamat,
                                 style: TextStyle(
                                   fontSize: 12.0,
                                   color: Colors.grey,
@@ -198,10 +199,10 @@ class _MyKulinerPageState extends State<MyKulinerPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => EditKuliner(
-                                kuliner: kuliner,
+                              builder: (context) => EditPengaduan(
+                                pengaduan: pengaduan,
                               ),
-                              settings: RouteSettings(arguments: kuliner),
+                              settings: RouteSettings(arguments: pengaduan),
                             ),
                           );
                         },
@@ -259,8 +260,8 @@ class _MyKulinerPageState extends State<MyKulinerPage> {
                                   ),
                                   TextButton(
                                     onPressed: () async {
-                                      var result = await KulinerController()
-                                          .deleteKuliner(kuliner.id);
+                                      var result = await PengaduanController()
+                                          .deletePengaduan(pengaduan.id);
                                       Navigator.of(context)
                                           .pop(); // Close the dialog
 

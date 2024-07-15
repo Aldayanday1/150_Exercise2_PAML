@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kulinerjogja/data/services/kuliner_service.dart';
-import 'package:kulinerjogja/presentation/views/search_page/search_screen.dart';
+import 'package:sistem_pengaduan/data/services/pengaduan_service.dart';
+import 'package:sistem_pengaduan/presentation/views/search_page/search_screen.dart';
 
 class SearchWidget extends StatelessWidget {
   const SearchWidget({super.key});
@@ -13,7 +13,7 @@ class SearchWidget extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => SearchPage(
-              kulinerService: KulinerService(),
+              pengaduanService: PengaduanService(),
             ),
           ),
         );

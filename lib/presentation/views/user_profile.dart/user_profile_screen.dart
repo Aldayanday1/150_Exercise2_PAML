@@ -2,10 +2,10 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kulinerjogja/domain/model/user_profile.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:kulinerjogja/presentation/controllers/user_controller.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/login_user_page/login_page.dart';
+import 'package:sistem_pengaduan/domain/model/user_profile.dart';
+import 'package:sistem_pengaduan/presentation/controllers/user_controller.dart';
+import 'package:sistem_pengaduan/presentation/views/auth_pages/login_user_page/login_page.dart';
 
 class UserProfilePage extends StatefulWidget {
   @override

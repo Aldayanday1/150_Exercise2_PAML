@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kulinerjogja/domain/model/user.dart';
-import 'package:kulinerjogja/presentation/controllers/user_controller.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/login_user_page/login_page.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/register_page/token_page.dart';
 import 'package:lottie/lottie.dart';
+import 'package:sistem_pengaduan/domain/model/user.dart';
+import 'package:sistem_pengaduan/presentation/controllers/user_controller.dart';
+import 'package:sistem_pengaduan/presentation/views/auth_pages/register_page/token_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -16,7 +15,10 @@ class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   final UserController _userController = UserController();
   final User _user = User();
+
   bool _obscurePassword = true;
+
+  // -------------------- INITIALIZE ARGUMENT --------------------
 
 // mengembalikan argumen teks dari tokenpage
   @override
@@ -32,6 +34,8 @@ class _RegisterPageState extends State<RegisterPage> {
       }
     });
   }
+
+  // ----------------------- REGISTER USER -----------------------
 
 //  validasi registrtasi
   void _register() async {

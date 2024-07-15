@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kulinerjogja/presentation/controllers/user_controller.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/login_user_page/token_page.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/register_page/register_page.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/welcome_page/welcome_page.dart';
 import 'package:lottie/lottie.dart';
+import 'package:sistem_pengaduan/presentation/controllers/user_controller.dart';
+import 'package:sistem_pengaduan/presentation/views/auth_pages/login_user_page/token_page.dart';
+import 'package:sistem_pengaduan/presentation/views/auth_pages/register_page/register_page.dart';
+import 'package:sistem_pengaduan/presentation/views/auth_pages/welcome_page/welcome_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override

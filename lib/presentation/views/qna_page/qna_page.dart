@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kulinerjogja/presentation/views/home_page/widgets/floating_button.dart';
 
 class QnAPage extends StatefulWidget {
   @override

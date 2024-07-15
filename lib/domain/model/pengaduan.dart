@@ -1,54 +1,54 @@
 import 'package:intl/intl.dart';
 
-// Enumeration untuk merepresentasikan berbagai kategori kuliner.
+// Enumeration untuk merepresentasikan berbagai kategori pengaduan.
 // Setiap kategori memiliki metode untuk mendapatkan tampilan nama kategorinya.
 // Terdapat juga metode untuk mengonversi string kategori menjadi enum dan sebaliknya.
 // SERIALISASI DATA
 enum Kategori {
   // ignore: constant_identifier_names
-  MAKANAN,
+  INFRASTRUKTUR,
   // ignore: constant_identifier_names
-  MINUMAN,
+  LINGKUNGAN,
   // ignore: constant_identifier_names
-  KUE,
+  TRANSPORTASI,
   // ignore: constant_identifier_names
-  DESSERT,
+  KEAMANAN,
   // ignore: constant_identifier_names
-  SNACK,
+  KESEHATAN,
   // ignore: constant_identifier_names
-  BREAD,
+  PENDIDIKAN,
   // ignore: constant_identifier_names
-  TEA,
+  SOSIAL,
   // ignore: constant_identifier_names
-  COFFEE,
+  IZIN,
   // ignore: constant_identifier_names
-  MILK,
+  BIROKRASI,
   // ignore: constant_identifier_names
-  JUICE;
+  LAINNYA;
 
   // Mendapatkan tampilan nama kategori.
   String get displayName {
     switch (this) {
-      case Kategori.MAKANAN:
-        return 'Makanan';
-      case Kategori.MINUMAN:
-        return 'Minuman';
-      case Kategori.KUE:
+      case Kategori.INFRASTRUKTUR:
+        return 'Infrastruktur';
+      case Kategori.LINGKUNGAN:
+        return 'Lingkungan';
+      case Kategori.TRANSPORTASI:
         return 'Transportasi';
-      case Kategori.DESSERT:
-        return 'Dessert';
-      case Kategori.SNACK:
-        return 'Snack';
-      case Kategori.BREAD:
-        return 'Bread';
-      case Kategori.TEA:
-        return 'Tea';
-      case Kategori.COFFEE:
-        return 'Coffee';
-      case Kategori.MILK:
-        return 'Milk';
-      case Kategori.JUICE:
-        return 'Juice';
+      case Kategori.KEAMANAN:
+        return 'Keamanan';
+      case Kategori.KESEHATAN:
+        return 'Kesehatan';
+      case Kategori.PENDIDIKAN:
+        return 'Pendidikan';
+      case Kategori.SOSIAL:
+        return 'Sosial';
+      case Kategori.IZIN:
+        return 'Izin';
+      case Kategori.BIROKRASI:
+        return 'Birokrasi';
+      case Kategori.LAINNYA:
+        return 'Lainnya';
       default:
         throw Exception('Unknown category: $this');
     }
@@ -57,26 +57,26 @@ enum Kategori {
 // Mengonversi string kategori menjadi enum Kategori.
   static Kategori fromString(String kategori) {
     switch (kategori) {
-      case 'MAKANAN':
-        return Kategori.MAKANAN;
-      case 'MINUMAN':
-        return Kategori.MINUMAN;
-      case 'KUE':
-        return Kategori.KUE;
-      case 'DESSERT':
-        return Kategori.DESSERT;
-      case 'SNACK':
-        return Kategori.SNACK;
-      case 'BREAD':
-        return Kategori.BREAD;
-      case 'TEA':
-        return Kategori.TEA;
-      case 'COFFEE':
-        return Kategori.COFFEE;
-      case 'MILK':
-        return Kategori.MILK;
-      case 'JUICE':
-        return Kategori.JUICE;
+      case 'INFRASTRUKTUR':
+        return Kategori.INFRASTRUKTUR;
+      case 'LINGKUNGAN':
+        return Kategori.LINGKUNGAN;
+      case 'TRANSPORTASI':
+        return Kategori.TRANSPORTASI;
+      case 'KEAMANAN':
+        return Kategori.KEAMANAN;
+      case 'KESEHATAN':
+        return Kategori.KESEHATAN;
+      case 'PENDIDIKAN':
+        return Kategori.PENDIDIKAN;
+      case 'SOSIAL':
+        return Kategori.SOSIAL;
+      case 'IZIN':
+        return Kategori.IZIN;
+      case 'BIROKRASI':
+        return Kategori.BIROKRASI;
+      case 'LAINNYA':
+        return Kategori.LAINNYA;
       default:
         throw Exception('Unknown category: $kategori');
     }
@@ -85,36 +85,36 @@ enum Kategori {
 // Mengonversi enum Kategori menjadi string kategori.
   static String kategoriToString(Kategori kategori) {
     switch (kategori) {
-      case Kategori.MAKANAN:
-        return 'MAKANAN';
-      case Kategori.MINUMAN:
-        return 'MINUMAN';
-      case Kategori.KUE:
-        return 'KUE';
-      case Kategori.DESSERT:
-        return 'DESSERT';
-      case Kategori.SNACK:
-        return 'SNACK';
-      case Kategori.BREAD:
-        return 'BREAD';
-      case Kategori.TEA:
-        return 'TEA';
-      case Kategori.COFFEE:
-        return 'COFFEE';
-      case Kategori.MILK:
-        return 'MILK';
-      case Kategori.JUICE:
-        return 'JUICE';
+      case Kategori.INFRASTRUKTUR:
+        return 'INFRASTRUKTUR';
+      case Kategori.LINGKUNGAN:
+        return 'LINGKUNGAN';
+      case Kategori.TRANSPORTASI:
+        return 'TRANSPORTASI';
+      case Kategori.KEAMANAN:
+        return 'KEAMANAN';
+      case Kategori.KESEHATAN:
+        return 'KESEHATAN';
+      case Kategori.PENDIDIKAN:
+        return 'PENDIDIKAN';
+      case Kategori.SOSIAL:
+        return 'SOSIAL';
+      case Kategori.IZIN:
+        return 'IZIN';
+      case Kategori.BIROKRASI:
+        return 'BIROKRASI';
+      case Kategori.LAINNYA:
+        return 'LAINNYA';
       default:
         throw Exception('Unknown category: $kategori');
     }
   }
 }
 
-// Kelas model untuk merepresentasikan data kuliner.
-class Kuliner {
+// Kelas model untuk merepresentasikan data pengaduan.
+class Pengaduan {
   int id;
-  String nama;
+  String judul;
   String deskripsi;
   String alamat;
   String gambar;
@@ -130,9 +130,9 @@ class Kuliner {
   String? status;
   String? tanggapan;
 
-  Kuliner({
+  Pengaduan({
     required this.id,
-    required this.nama,
+    required this.judul,
     required this.alamat,
     required this.deskripsi,
     required this.gambar,
@@ -149,11 +149,11 @@ class Kuliner {
     required this.tanggapan,
   });
 
-// Mengonversi data JSON menjadi objek Kuliner.
-  factory Kuliner.fromJson(Map<String, dynamic> json) {
-    return Kuliner(
+// Mengonversi data JSON menjadi objek Pengaduan.
+  factory Pengaduan.fromJson(Map<String, dynamic> json) {
+    return Pengaduan(
       id: json['id'],
-      nama: json['nama'],
+      judul: json['judul'],
       alamat: json['alamat'],
       gambar: json['gambar'],
       deskripsi: json['deskripsi'],
@@ -174,11 +174,11 @@ class Kuliner {
 // Mendapatkan tampilan nama kategori dari enum Kategori.
   String get kategoriString => kategori.displayName;
 
-// Mengonversi objek Kuliner menjadi data JSON.
+// Mengonversi objek Pengaduan menjadi data JSON.
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'nama': nama,
+      'judul': judul,
       'alamat': alamat,
       'gambar': gambar,
       'deskripsi': deskripsi,

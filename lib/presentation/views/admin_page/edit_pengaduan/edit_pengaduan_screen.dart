@@ -1,31 +1,38 @@
+// ignore_for_file: unnecessary_null_comparison
+
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:kulinerjogja/data/services/user_service.dart';
-import 'package:kulinerjogja/domain/model/kuliner.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kulinerjogja/domain/model/status_laporan.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/login_admin_page/login_page.dart';
-import 'package:kulinerjogja/presentation/views/map_page/map_static_detail.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:sistem_pengaduan/data/services/user_service.dart';
+import 'package:sistem_pengaduan/domain/model/pengaduan.dart';
+import 'package:sistem_pengaduan/domain/model/status_laporan.dart';
+import 'package:sistem_pengaduan/presentation/views/auth_pages/login_admin_page/login_page.dart';
+import 'package:sistem_pengaduan/presentation/views/map_page/map_static_detail.dart';
 
-class EditPengaduan extends StatefulWidget {
-  final Kuliner kuliner;
+class EditPengaduanAdmin extends StatefulWidget {
+  final Pengaduan pengaduan;
 
-  const EditPengaduan({
+  const EditPengaduanAdmin({
     Key? key,
-    required this.kuliner,
+    required this.pengaduan,
   }) : super(key: key);
 
   @override
-  State<EditPengaduan> createState() => _EditPengaudanViewState();
+  State<EditPengaduanAdmin> createState() => _EditPengaudanViewState();
 }
 
-class _EditPengaudanViewState extends State<EditPengaduan> {
+class _EditPengaudanViewState extends State<EditPengaduanAdmin> {
   late StatusLaporan _statusLaporan;
 
   final _statusController = TextEditingController();
   final _tanggapanController = TextEditingController();
+
+  final ApiService _service = ApiService();
 
   bool showMap =
       false; // State untuk menentukan apakah kartu peta harus ditampilkan
@@ -35,20 +42,21 @@ class _EditPengaudanViewState extends State<EditPengaduan> {
   @override
   void initState() {
     super.initState();
+    // Mendeklarasikan _statusLaporan dengan atau tanpa gambar
     _statusLaporan = StatusLaporan(
-      id: widget.kuliner.id,
-      statusSebelumnya: widget.kuliner.status ?? 'Pending',
-      statusBaru: widget.kuliner.status ?? 'Pending',
-      tanggapan: widget.kuliner.tanggapan ?? '',
+      id: widget.pengaduan.id,
+      statusSebelumnya: widget.pengaduan.status ?? 'Pending',
+      statusBaru: widget.pengaduan.status ?? 'Pending',
+      tanggapan: widget.pengaduan.tanggapan ?? '',
       changedAt: DateTime.now(),
     );
+
+    // Menginisialisasi nilai controller
     _statusController.text = _statusLaporan.statusBaru;
     _tanggapanController.text = _statusLaporan.tanggapan;
   }
 
   //---------- UPDATE STATUS ADUAN ---------
-
-  final ApiService _service = ApiService();
 
   void _updateStatusLaporan() async {
     try {
@@ -79,8 +87,10 @@ class _EditPengaudanViewState extends State<EditPengaduan> {
 
       // Update state untuk menampilkan perubahan status di UI
       setState(() {
-        widget.kuliner.status = _statusLaporan.statusBaru;
-        widget.kuliner.tanggapan = _statusLaporan.tanggapan;
+        widget.pengaduan.status = _statusLaporan.statusBaru;
+        widget.pengaduan.tanggapan = _statusLaporan.tanggapan;
+        widget.pengaduan.gambar =
+            _statusLaporan.gambar; // update gambar di widget pengaduan
       });
     } catch (e) {
       if (e.toString().contains('Token tidak valid')) {
@@ -108,7 +118,7 @@ class _EditPengaudanViewState extends State<EditPengaduan> {
     // ----------- STATUS COLOR TEXT -----------
 
     Color statusColor;
-    String statusText = widget.kuliner.status ?? 'Pending';
+    String statusText = widget.pengaduan.status ?? 'Pending';
 
     switch (statusText.toUpperCase()) {
       case 'PROGRESS':
@@ -168,9 +178,9 @@ class _EditPengaudanViewState extends State<EditPengaduan> {
                             // ----------- BACKGROUND IMAGE -----------
                             Center(
                               child: Hero(
-                                tag: 'unique_tag_3_${widget.kuliner.id}',
+                                tag: 'unique_tag_3_${widget.pengaduan.id}',
                                 child: Image.network(
-                                  widget.kuliner.gambar,
+                                  widget.pengaduan.gambar,
                                   height: 500,
                                   width: double.infinity,
                                   fit: BoxFit.cover,
@@ -252,7 +262,7 @@ class _EditPengaudanViewState extends State<EditPengaduan> {
                 children: [
                   // ----------- TITLE -----------
                   Text(
-                    widget.kuliner.nama,
+                    widget.pengaduan.judul,
                     style: GoogleFonts.roboto(
                       fontSize: 25.0,
                       color: Color.fromARGB(255, 66, 66, 66),
@@ -285,7 +295,7 @@ class _EditPengaudanViewState extends State<EditPengaduan> {
                     ),
                   ),
                   Text(
-                    widget.kuliner.deskripsi,
+                    widget.pengaduan.deskripsi,
                     style: GoogleFonts.roboto(
                       fontSize: 14.0,
                       color: Color.fromARGB(255, 66, 66, 66),
@@ -305,7 +315,7 @@ class _EditPengaudanViewState extends State<EditPengaduan> {
                       Padding(
                         padding: const EdgeInsets.only(left: 8.5),
                         child: Text(
-                          'Kategori : ${widget.kuliner.kategoriString}',
+                          'Kategori : ${widget.pengaduan.kategoriString}',
                           style: GoogleFonts.roboto(
                             fontSize: 14.0,
                             color: Color.fromARGB(255, 66, 66, 66),
@@ -333,7 +343,7 @@ class _EditPengaudanViewState extends State<EditPengaduan> {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 4.5),
                           child: Text(
-                            widget.kuliner.alamat,
+                            widget.pengaduan.alamat,
                             style: GoogleFonts.roboto(
                               fontSize: 14.0,
                               color: Color.fromARGB(255, 66, 66, 66),
@@ -355,7 +365,7 @@ class _EditPengaudanViewState extends State<EditPengaduan> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(25),
                         child: Image.network(
-                          widget.kuliner.profileImagePembuat,
+                          widget.pengaduan.profileImagePembuat,
                           width: 16,
                           height: 16,
                           fit: BoxFit.cover,
@@ -363,7 +373,7 @@ class _EditPengaudanViewState extends State<EditPengaduan> {
                       ),
                       SizedBox(width: 8),
                       Text(
-                        'Dibuat oleh : ${widget.kuliner.namaPembuat}',
+                        'Dibuat oleh : ${widget.pengaduan.namaPembuat}',
                         style: GoogleFonts.roboto(
                           fontSize: 14,
                           color: Color.fromARGB(255, 66, 66, 66),
@@ -378,7 +388,7 @@ class _EditPengaudanViewState extends State<EditPengaduan> {
                   Padding(
                     padding: const EdgeInsets.only(left: 2.0, top: 18),
                     child: Text(
-                      widget.kuliner.dateMessage,
+                      widget.pengaduan.dateMessage,
                       style: GoogleFonts.roboto(
                         fontSize: 14,
                         color: Color.fromARGB(255, 66, 66, 66),
@@ -447,8 +457,8 @@ class _EditPengaudanViewState extends State<EditPengaduan> {
                               ),
                               child: StaticMap(
                                 location: LatLng(
-                                  widget.kuliner.latitude,
-                                  widget.kuliner.longitude,
+                                  widget.pengaduan.latitude,
+                                  widget.pengaduan.longitude,
                                 ),
                                 // onLocationChanged: (ltlng, strng) {},
                               ),
@@ -497,7 +507,7 @@ class _EditPengaudanViewState extends State<EditPengaduan> {
               padding: EdgeInsets.only(left: 40, top: 0, right: 40, bottom: 50),
               child: Column(
                 children: [
-                  if (widget.kuliner.tanggapan != null)
+                  if (widget.pengaduan.tanggapan != null)
                     Container(
                       width: double.infinity,
                       child: Column(
@@ -572,7 +582,7 @@ class _EditPengaudanViewState extends State<EditPengaduan> {
                                             ),
                                             SizedBox(height: 5),
                                             Text(
-                                              widget.kuliner.tanggapan!,
+                                              widget.pengaduan.tanggapan!,
                                               style: GoogleFonts.roboto(
                                                 fontSize: 12,
                                                 color: Color.fromARGB(

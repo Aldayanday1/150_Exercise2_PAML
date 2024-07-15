@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:kulinerjogja/presentation/controllers/user_controller.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/register_page/email_verified_page.dart';
 import 'dart:async';
 
-import 'package:kulinerjogja/presentation/views/auth_pages/register_page/register_page.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:sistem_pengaduan/presentation/controllers/user_controller.dart';
+import 'package:sistem_pengaduan/presentation/views/auth_pages/register_page/email_verified_page.dart';
+import 'package:sistem_pengaduan/presentation/views/auth_pages/register_page/register_page.dart';
 
 class TokenInputPage extends StatefulWidget {
   final String email;

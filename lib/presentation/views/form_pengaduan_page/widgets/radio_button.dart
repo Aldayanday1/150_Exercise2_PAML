@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kulinerjogja/domain/model/kuliner.dart';
+import 'package:sistem_pengaduan/domain/model/pengaduan.dart';
 
 class RadioButton extends StatefulWidget {
   final Kategori? selectedKategori;
@@ -24,53 +24,53 @@ class _RadioButtonState extends State<RadioButton> {
       children: <Widget>[
         SizedBox(height: 8),
         _buildRadioButton(
-          title: 'Makanan',
-          value: Kategori.MAKANAN,
+          title: 'Infrastruktur',
+          value: Kategori.INFRASTRUKTUR,
         ),
         SizedBox(height: 20), // Jarak antara RadioListTile
         _buildRadioButton(
-          title: 'Minuman',
-          value: Kategori.MINUMAN,
+          title: 'Lingkungan',
+          value: Kategori.LINGKUNGAN,
         ),
         SizedBox(height: 20), // Jarak antara RadioListTile
         _buildRadioButton(
-          title: 'Kue',
-          value: Kategori.KUE,
+          title: 'Transportasi',
+          value: Kategori.TRANSPORTASI,
         ),
         SizedBox(height: 20), // Jarak antara RadioListTile
         _buildRadioButton(
-          title: 'Dessert',
-          value: Kategori.DESSERT,
+          title: 'Keamanan',
+          value: Kategori.KEAMANAN,
         ),
         SizedBox(height: 20), // Jarak antara RadioListTile
         _buildRadioButton(
-          title: 'Snack',
-          value: Kategori.SNACK,
+          title: 'Kesehatan',
+          value: Kategori.KESEHATAN,
         ),
         SizedBox(height: 20), // Jarak antara RadioListTile
         _buildRadioButton(
-          title: 'Bread',
-          value: Kategori.BREAD,
+          title: 'Pendidikan',
+          value: Kategori.PENDIDIKAN,
         ),
         SizedBox(height: 20), // Jarak antara RadioListTile
         _buildRadioButton(
-          title: 'Tea',
-          value: Kategori.TEA,
+          title: 'Sosial',
+          value: Kategori.SOSIAL,
         ),
         SizedBox(height: 20), // Jarak antara RadioListTile
         _buildRadioButton(
-          title: 'Coffee',
-          value: Kategori.COFFEE,
+          title: 'Izin',
+          value: Kategori.IZIN,
         ),
         SizedBox(height: 20), // Jarak antara RadioListTile
         _buildRadioButton(
-          title: 'Milk',
-          value: Kategori.MILK,
+          title: 'Birokrasi',
+          value: Kategori.BIROKRASI,
         ),
         SizedBox(height: 20), // Jarak antara RadioListTile
         _buildRadioButton(
-          title: 'Juice',
-          value: Kategori.JUICE,
+          title: 'Lainnya',
+          value: Kategori.LAINNYA,
         ),
       ],
     );

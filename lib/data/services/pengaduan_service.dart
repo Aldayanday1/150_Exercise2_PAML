@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:kulinerjogja/domain/model/daily_graph.dart';
-import 'package:kulinerjogja/domain/model/kuliner.dart';
+import 'package:sistem_pengaduan/domain/model/daily_graph.dart';
+import 'package:sistem_pengaduan/domain/model/pengaduan.dart';
 
-class KulinerService {
+class PengaduanService {
   final String baseUrl = 'http://192.168.56.1:8080/api/users';
   final FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
@@ -15,7 +15,7 @@ class KulinerService {
 
   // -------------- POST -------------------
 
-  Future<http.Response> tambahKuliner(
+  Future<http.Response> tambahPengaduan(
       Map<String, String> data, File? file) async {
     var request = http.MultipartRequest('POST', getUri('/add'));
 
@@ -39,25 +39,25 @@ class KulinerService {
 
   // -------------- GET ALL -------------------
 
-  Future<List<Kuliner>> fetchKuliner() async {
+  Future<List<Pengaduan>> fetchPengaduan() async {
     try {
       final response = await http.get(getUri('/all'));
       if (response.statusCode == 200) {
         final List<dynamic> decodedResponse = json.decode(response.body);
-        List<Kuliner> kuliner =
-            decodedResponse.map((json) => Kuliner.fromJson(json)).toList();
-        return kuliner;
+        List<Pengaduan> pengaduan =
+            decodedResponse.map((json) => Pengaduan.fromJson(json)).toList();
+        return pengaduan;
       } else {
-        throw Exception('Failed to load kuliner: ${response.reasonPhrase}');
+        throw Exception('Failed to load pengaduan: ${response.reasonPhrase}');
       }
     } catch (e) {
       throw Exception('Failed to connect to server');
     }
   }
 
-  // -------------- GET KULINER BY ID  -------------------
+  // -------------- GET PENGADUAN BY ID  -------------------
 
-  Future<List<Kuliner>> getMyKuliner() async {
+  Future<List<Pengaduan>> getMyPengaduan() async {
     // Mengambil token dari secure storage
     final token = await secureStorage.read(key: 'jwt_token');
     print('Get JWT from secureStorage (Menu by ID User): $token');
@@ -68,41 +68,41 @@ class KulinerService {
 
     // Lanjutkan permintaan HTTP dengan token yang valid
     final response = await http.get(
-      Uri.parse('$baseUrl/my-kuliner'),
+      Uri.parse('$baseUrl/my-pengaduan'),
       headers: {'Authorization': 'Bearer $token'},
     );
 
     if (response.statusCode == 200) {
       List<dynamic> jsonList = jsonDecode(response.body);
-      List<Kuliner> kulinerList =
-          jsonList.map((json) => Kuliner.fromJson(json)).toList();
-      return kulinerList;
+      List<Pengaduan> pengaduanList =
+          jsonList.map((json) => Pengaduan.fromJson(json)).toList();
+      return pengaduanList;
     } else if (response.statusCode == 401) {
       // Token tidak valid atau tidak ada, arahkan pengguna kembali ke halaman login
       await secureStorage.delete(key: 'jwt_token'); // Hapus token dari storage
       print('Token has been Revoked (expired): $secureStorage');
       throw Exception('Token tidak valid. Silakan login kembali.');
     } else {
-      throw Exception('Gagal memuat kuliner: ${response.body}');
+      throw Exception('Gagal memuat pengaduan: ${response.body}');
     }
   }
 
-  // ------------ GET KULINER BY STATUS (ADMIN) -----------------
+  // ------------ GET PENGADUAN BY STATUS (ADMIN) -----------------
 
-  Future<List<Kuliner>> getKulinerByStatus(String status) async {
+  Future<List<Pengaduan>> getPengaduanByStatus(String status) async {
     final response =
-        await http.get(Uri.parse('$baseUrl/kuliner-by-status/$status'));
+        await http.get(Uri.parse('$baseUrl/pengaduan-by-status/$status'));
     if (response.statusCode == 200) {
       List<dynamic> body = jsonDecode(response.body);
-      return body.map((dynamic item) => Kuliner.fromJson(item)).toList();
+      return body.map((dynamic item) => Pengaduan.fromJson(item)).toList();
     } else {
-      throw Exception('Failed to load kuliner');
+      throw Exception('Failed to load pengaduan');
     }
   }
 
   // ------------ GET GRAPH COUNT (ADMIN) -----------------
 
-  Future<List<KulinerDaily>> fetchDailyKulinerCount() async {
+  Future<List<PengaduanDaily>> fetchDailyPengaduanCount() async {
     try {
       // Mengambil token dari secure storage
       final token = await secureStorage.read(key: 'jwt_token');
@@ -121,7 +121,7 @@ class KulinerService {
       if (response.statusCode == 200) {
         final Map<String, dynamic> json = jsonDecode(response.body);
 
-        List<KulinerDaily> kulinerList = [
+        List<PengaduanDaily> pengaduanList = [
           'MONDAY',
           'TUESDAY',
           'WEDNESDAY',
@@ -131,10 +131,10 @@ class KulinerService {
           'SUNDAY'
         ].map((day) {
           int count = json[day] ?? 0; // default value is 0 if data not exist
-          return KulinerDaily(day: day, count: count);
+          return PengaduanDaily(day: day, count: count);
         }).toList();
 
-        return kulinerList;
+        return pengaduanList;
       } else if (response.statusCode == 401) {
         // Token tidak valid atau tidak ada, arahkan pengguna kembali ke halaman login
         await secureStorage.delete(
@@ -143,19 +143,19 @@ class KulinerService {
         throw Exception('Token tidak valid. Silakan login kembali.');
       } else {
         throw Exception(
-            'Gagal memuat jumlah data kuliner per hari: ${response.body}');
+            'Gagal memuat jumlah data pengaduan per hari: ${response.body}');
       }
     } catch (e) {
       throw Exception(
-          'Terjadi kesalahan saat memuat jumlah data kuliner per hari: $e');
+          'Terjadi kesalahan saat memuat jumlah data pengaduan per hari: $e');
     }
   }
 
   // -------------- PUT -------------------
 
-  Future<http.Response> updateKuliner(
+  Future<http.Response> updatePengaduan(
       int id, Map<String, String> data, File? file) async {
-    // Membuat URI untuk endpoint update dengan ID kuliner
+    // Membuat URI untuk endpoint update dengan ID pengaduan
     var request = http.MultipartRequest('PUT', getUri('/update/$id'));
 
     // Menambahkan field data ke dalam request
@@ -180,8 +180,8 @@ class KulinerService {
 
   // -------------- DELETE -------------------
 
-  Future<http.Response> deleteKuliner(int id) async {
-    // Membuat URI untuk endpoint delete dengan ID kuliner
+  Future<http.Response> deletePengaduan(int id) async {
+    // Membuat URI untuk endpoint delete dengan ID pengaduan
     var uri = getUri('/delete/$id');
 
     // Mengambil token dari secure storage
@@ -207,153 +207,170 @@ class KulinerService {
 
   //-------------- CATEGORY FILTERING -------------------
 
-  Future<List<Kuliner>> fetchKategoriMakanan() async {
+  Future<List<Pengaduan>> fetchKategoriInfrastruktur() async {
     try {
-      final response = await http.get(getUri('/kategori/makanan'));
+      final response = await http.get(getUri('/kategori/infrastruktur'));
       if (response.statusCode == 200) {
         final List<dynamic> decodedResponse = json.decode(response.body);
-        List<Kuliner> kategoriMakanan =
-            decodedResponse.map((data) => Kuliner.fromJson(data)).toList();
-        return kategoriMakanan;
+        List<Pengaduan> kategoriInfrastruktur =
+            decodedResponse.map((data) => Pengaduan.fromJson(data)).toList();
+        return kategoriInfrastruktur;
       } else {
         throw Exception(
-            'Failed to fetch kategori makanan: ${response.reasonPhrase}');
+            'Failed to fetch kategori infrastruktur: ${response.reasonPhrase}');
       }
     } catch (e) {
       throw Exception('Failed to connect to server');
     }
   }
 
-  Future<List<Kuliner>> fetchKategoriMinuman() async {
+  Future<List<Pengaduan>> fetchKategoriLingkungan() async {
     try {
-      final response = await http.get(getUri('/kategori/minuman'));
+      final response = await http.get(getUri('/kategori/lingkungan'));
       if (response.statusCode == 200) {
         final List<dynamic> decodedResponse = json.decode(response.body);
-        List<Kuliner> kategoriMinuman =
-            decodedResponse.map((data) => Kuliner.fromJson(data)).toList();
-        return kategoriMinuman;
+        List<Pengaduan> kategoriLingkungan =
+            decodedResponse.map((data) => Pengaduan.fromJson(data)).toList();
+        return kategoriLingkungan;
       } else {
         throw Exception(
-            'Failed to fetch kategori minuman: ${response.reasonPhrase}');
+            'Failed to fetch kategori lingkungan: ${response.reasonPhrase}');
       }
     } catch (e) {
       throw Exception('Failed to connect to server');
     }
   }
 
-  Future<List<Kuliner>> fetchKategoriKue() async {
+  Future<List<Pengaduan>> fetchKategoriTransportasi() async {
     try {
-      final response = await http.get(getUri('/kategori/kue'));
+      final response = await http.get(getUri('/kategori/transportasi'));
       if (response.statusCode == 200) {
         final List<dynamic> decodedResponse = json.decode(response.body);
-        List<Kuliner> kategoriKue =
-            decodedResponse.map((data) => Kuliner.fromJson(data)).toList();
-        return kategoriKue;
+        List<Pengaduan> kategoriTransportasi =
+            decodedResponse.map((data) => Pengaduan.fromJson(data)).toList();
+        return kategoriTransportasi;
       } else {
         throw Exception(
-            'Failed to fetch kategori kue: ${response.reasonPhrase}');
+            'Failed to fetch kategori transportasi: ${response.reasonPhrase}');
       }
     } catch (e) {
       throw Exception('Failed to connect to server');
     }
   }
 
-  Future<List<Kuliner>> fetchKategoriDessert() async {
+  Future<List<Pengaduan>> fetchKategoriKeamanan() async {
     try {
-      final response = await http.get(getUri('/kategori/dessert'));
+      final response = await http.get(getUri('/kategori/keamanan'));
       if (response.statusCode == 200) {
         final List<dynamic> decodedResponse = json.decode(response.body);
-        List<Kuliner> kategoriDessert =
-            decodedResponse.map((data) => Kuliner.fromJson(data)).toList();
-        return kategoriDessert;
+        List<Pengaduan> kategoriKeamanan =
+            decodedResponse.map((data) => Pengaduan.fromJson(data)).toList();
+        return kategoriKeamanan;
       } else {
         throw Exception(
-            'Failed to fetch kategori dessert: ${response.reasonPhrase}');
+            'Failed to fetch kategori keamanan: ${response.reasonPhrase}');
       }
     } catch (e) {
       throw Exception('Failed to connect to server');
     }
   }
 
-  Future<List<Kuliner>> fetchKategoriSnack() async {
+  Future<List<Pengaduan>> fetchKategoriKesehatan() async {
     try {
-      final response = await http.get(getUri('/kategori/snack'));
+      final response = await http.get(getUri('/kategori/kesehatan'));
       if (response.statusCode == 200) {
         final List<dynamic> decodedResponse = json.decode(response.body);
-        List<Kuliner> kategoriSnack =
-            decodedResponse.map((data) => Kuliner.fromJson(data)).toList();
-        return kategoriSnack;
+        List<Pengaduan> kategoriKesehatan =
+            decodedResponse.map((data) => Pengaduan.fromJson(data)).toList();
+        return kategoriKesehatan;
       } else {
         throw Exception(
-            'Failed to fetch kategori snack: ${response.reasonPhrase}');
+            'Failed to fetch kategori kesehatan: ${response.reasonPhrase}');
       }
     } catch (e) {
       throw Exception('Failed to connect to server');
     }
   }
 
-  Future<List<Kuliner>> fetchKategoriBread() async {
+  Future<List<Pengaduan>> fetchKategoriPendidikan() async {
     try {
-      final response = await http.get(getUri('/kategori/bread'));
+      final response = await http.get(getUri('/kategori/pendidikan'));
       if (response.statusCode == 200) {
         final List<dynamic> decodedResponse = json.decode(response.body);
-        List<Kuliner> kategoriBread =
-            decodedResponse.map((data) => Kuliner.fromJson(data)).toList();
-        return kategoriBread;
+        List<Pengaduan> kategoriPendidikan =
+            decodedResponse.map((data) => Pengaduan.fromJson(data)).toList();
+        return kategoriPendidikan;
       } else {
         throw Exception(
-            'Failed to fetch kategori bread: ${response.reasonPhrase}');
+            'Failed to fetch kategori pendidikan: ${response.reasonPhrase}');
       }
     } catch (e) {
       throw Exception('Failed to connect to server');
     }
   }
 
-  Future<List<Kuliner>> fetchKategoriTea() async {
+  Future<List<Pengaduan>> fetchKategoriSosial() async {
     try {
-      final response = await http.get(getUri('/kategori/tea'));
+      final response = await http.get(getUri('/kategori/sosial'));
       if (response.statusCode == 200) {
         final List<dynamic> decodedResponse = json.decode(response.body);
-        List<Kuliner> kategoriTea =
-            decodedResponse.map((data) => Kuliner.fromJson(data)).toList();
-        return kategoriTea;
+        List<Pengaduan> kategoriSosial =
+            decodedResponse.map((data) => Pengaduan.fromJson(data)).toList();
+        return kategoriSosial;
       } else {
         throw Exception(
-            'Failed to fetch kategori tea: ${response.reasonPhrase}');
+            'Failed to fetch kategori sosial: ${response.reasonPhrase}');
       }
     } catch (e) {
       throw Exception('Failed to connect to server');
     }
   }
 
-  Future<List<Kuliner>> fetchKategoriCoffee() async {
+  Future<List<Pengaduan>> fetchKategoriIzin() async {
     try {
-      final response = await http.get(getUri('/kategori/coffee'));
+      final response = await http.get(getUri('/kategori/izin'));
       if (response.statusCode == 200) {
         final List<dynamic> decodedResponse = json.decode(response.body);
-        List<Kuliner> kategoriCoffee =
-            decodedResponse.map((data) => Kuliner.fromJson(data)).toList();
-        return kategoriCoffee;
+        List<Pengaduan> kategoriIzin =
+            decodedResponse.map((data) => Pengaduan.fromJson(data)).toList();
+        return kategoriIzin;
       } else {
         throw Exception(
-            'Failed to fetch kategori coffee: ${response.reasonPhrase}');
+            'Failed to fetch kategori izin: ${response.reasonPhrase}');
       }
     } catch (e) {
       throw Exception('Failed to connect to server');
     }
   }
 
-  Future<List<Kuliner>> fetchKategoriJuice() async {
+  Future<List<Pengaduan>> fetchKategoriBirokrasi() async {
     try {
-      final response = await http.get(getUri('/kategori/juice'));
+      final response = await http.get(getUri('/kategori/birokrasi'));
       if (response.statusCode == 200) {
         final List<dynamic> decodedResponse = json.decode(response.body);
-        List<Kuliner> kategoriJuice =
-            decodedResponse.map((data) => Kuliner.fromJson(data)).toList();
-        return kategoriJuice;
+        List<Pengaduan> kategoriBirokrasi =
+            decodedResponse.map((data) => Pengaduan.fromJson(data)).toList();
+        return kategoriBirokrasi;
       } else {
         throw Exception(
-            'Failed to fetch kategori juice: ${response.reasonPhrase}');
+            'Failed to fetch kategori birokrasi: ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      throw Exception('Failed to connect to server');
+    }
+  }
+
+  Future<List<Pengaduan>> fetchKategoriLainnya() async {
+    try {
+      final response = await http.get(getUri('/kategori/lainnya'));
+      if (response.statusCode == 200) {
+        final List<dynamic> decodedResponse = json.decode(response.body);
+        List<Pengaduan> kategoriLainnya =
+            decodedResponse.map((data) => Pengaduan.fromJson(data)).toList();
+        return kategoriLainnya;
+      } else {
+        throw Exception(
+            'Failed to fetch kategori Lainnya: ${response.reasonPhrase}');
       }
     } catch (e) {
       throw Exception('Failed to connect to server');
@@ -362,17 +379,17 @@ class KulinerService {
 
   // -------------- SEARCH -------------------
 
-  Future<List<Kuliner>> searchKuliner(String query) async {
+  Future<List<Pengaduan>> searchPengaduan(String query) async {
     try {
-      final response = await http.get(getUri('/search?nama=$query'));
+      final response = await http.get(getUri('/search?judul=$query'));
       if (response.statusCode == 200) {
         final List<dynamic> decodedResponse = json.decode(response.body);
-        List<Kuliner> kulinerList = decodedResponse
-            .map((json) => Kuliner.fromJson(json))
-            .toList(); // Konversi ke List<Kuliner>
-        return kulinerList;
+        List<Pengaduan> pengaduanList = decodedResponse
+            .map((json) => Pengaduan.fromJson(json))
+            .toList(); // Konversi ke List<Pengaduan>
+        return pengaduanList;
       } else {
-        throw Exception('Failed to search kuliner: ${response.reasonPhrase}');
+        throw Exception('Failed to search pengaduan: ${response.reasonPhrase}');
       }
     } catch (e) {
       throw Exception('Failed to connect to server');

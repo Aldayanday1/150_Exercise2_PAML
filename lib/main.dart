@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/login_admin_page/login_page.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/login_user_page/login_page.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/login_user_page/token_page.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/register_page/email_verified_page.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/register_page/register_page.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/register_page/token_page.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/welcome_page/welcome_page.dart';
-import 'package:kulinerjogja/presentation/views/home_page/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sistem_pengaduan/presentation/views/auth_pages/login_admin_page/login_page.dart';
+import 'package:sistem_pengaduan/presentation/views/auth_pages/login_user_page/login_page.dart';
+import 'package:sistem_pengaduan/presentation/views/auth_pages/welcome_page/welcome_page.dart';
+import 'package:sistem_pengaduan/presentation/views/form_pengaduan_page/form_pengaduan_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +31,6 @@ class MyApp extends StatelessWidget {
           ),
           useMaterial3: true,
         ),
-        home: EmailVerifiedPage());
+        home: WelcomePage());
   }
 }

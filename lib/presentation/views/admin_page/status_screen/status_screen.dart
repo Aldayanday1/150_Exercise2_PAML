@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:kulinerjogja/domain/model/kuliner.dart';
-import 'package:kulinerjogja/presentation/controllers/kuliner_controller.dart';
-import 'package:kulinerjogja/presentation/views/admin_page/card_kuliner.dart';
+import 'package:sistem_pengaduan/domain/model/pengaduan.dart';
+import 'package:sistem_pengaduan/presentation/controllers/pengaduan_controller.dart';
+import 'package:sistem_pengaduan/presentation/views/admin_page/card_pengaduan.dart';
 
-class KulinerStatusPage extends StatelessWidget {
+class PengaduanStatusPage extends StatelessWidget {
   final String status;
 
-  KulinerStatusPage({required this.status});
+  PengaduanStatusPage({required this.status});
 
-  final KulinerController _controller = KulinerController();
+  final PengaduanController _controller = PengaduanController();
 
-  Future<List<Kuliner>> _loadKulinerByStatus() {
-    return _controller.getKulinerByStatus(status);
+  Future<List<Pengaduan>> _loadPengaduanByStatus() {
+    return _controller.getPengaduanByStatus(status);
   }
 
   String _formatStatus(String status) {
@@ -33,8 +33,8 @@ class KulinerStatusPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Status ${_formatStatus(status)}'),
       ),
-      body: FutureBuilder<List<Kuliner>>(
-        future: _loadKulinerByStatus(),
+      body: FutureBuilder<List<Pengaduan>>(
+        future: _loadPengaduanByStatus(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -45,10 +45,10 @@ class KulinerStatusPage extends StatelessWidget {
             return ListView.builder(
               itemCount: data.length,
               itemBuilder: (context, index) {
-                final kuliner = data[index];
+                final pengaduan = data[index];
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: buildKulinerCardAdmin(context, kuliner),
+                  child: buildPengaduanCardAdmin(context, pengaduan),
                 );
               },
             );

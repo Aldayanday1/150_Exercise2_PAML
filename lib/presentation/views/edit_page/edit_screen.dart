@@ -6,23 +6,23 @@ import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:kulinerjogja/presentation/controllers/kuliner_controller.dart';
-import 'package:kulinerjogja/domain/model/kuliner.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/login_user_page/login_page.dart';
-import 'package:kulinerjogja/presentation/views/detail_page/detail_screen.dart';
-import 'package:kulinerjogja/presentation/views/home_page/home_screen.dart';
-import 'package:kulinerjogja/presentation/views/map_page/map_static_edit.dart';
-import 'package:kulinerjogja/presentation/views/form_kuliner_page/widgets/radio_button.dart';
+import 'package:sistem_pengaduan/domain/model/pengaduan.dart';
+import 'package:sistem_pengaduan/presentation/controllers/pengaduan_controller.dart';
+import 'package:sistem_pengaduan/presentation/views/auth_pages/login_user_page/login_page.dart';
+import 'package:sistem_pengaduan/presentation/views/detail_page/detail_screen.dart';
+import 'package:sistem_pengaduan/presentation/views/form_pengaduan_page/widgets/radio_button.dart';
+import 'package:sistem_pengaduan/presentation/views/home_page/home_screen.dart';
+import 'package:sistem_pengaduan/presentation/views/map_page/map_static_edit.dart';
 
-class EditKuliner extends StatefulWidget {
-  final Kuliner kuliner;
-  const EditKuliner({Key? key, required this.kuliner}) : super(key: key);
+class EditPengaduan extends StatefulWidget {
+  final Pengaduan pengaduan;
+  const EditPengaduan({Key? key, required this.pengaduan}) : super(key: key);
 
   @override
-  State<EditKuliner> createState() => _EditKulinerState();
+  State<EditPengaduan> createState() => _EditPengaduanState();
 }
 
-class _EditKulinerState extends State<EditKuliner> {
+class _EditPengaduanState extends State<EditPengaduan> {
   // -------- IMAGE PICKER --------
   File? _image;
   final _imagePicker = ImagePicker();
@@ -66,9 +66,9 @@ class _EditKulinerState extends State<EditKuliner> {
 
   final _formKey = GlobalKey<FormState>();
 
-  // terkait dengan id kuliner dengan settingan default -> 0
-  int _idKuliner = 0;
-  final _nama = TextEditingController();
+  // terkait dengan id pengaduan dengan settingan default -> 0
+  int _idPengaduan = 0;
+  final _judul = TextEditingController();
   final _deskripsi = TextEditingController();
   Kategori? selectedKategori;
 
@@ -79,23 +79,23 @@ class _EditKulinerState extends State<EditKuliner> {
   }
 
   @override
-  void didUpdateWidget(EditKuliner oldWidget) {
+  void didUpdateWidget(EditPengaduan oldWidget) {
     super.didUpdateWidget(oldWidget);
     _initializeData();
   }
 
   void _initializeData() {
     var arguments = ModalRoute.of(context)?.settings.arguments;
-    if (arguments is Kuliner) {
-      Kuliner kuliner = arguments;
-      _idKuliner = kuliner.id;
-      _nama.text = kuliner.nama;
-      _deskripsi.text = kuliner.deskripsi;
-      selectedKategori = kuliner.kategori;
-      _image = File(kuliner.gambar);
+    if (arguments is Pengaduan) {
+      Pengaduan pengaduan = arguments;
+      _idPengaduan = pengaduan.id;
+      _judul.text = pengaduan.judul;
+      _deskripsi.text = pengaduan.deskripsi;
+      selectedKategori = pengaduan.kategori;
+      _image = File(pengaduan.gambar);
       setState(() {
-        _alamat = kuliner.alamat;
-        _selectedLocation = LatLng(kuliner.latitude, kuliner.longitude);
+        _alamat = pengaduan.alamat;
+        _selectedLocation = LatLng(pengaduan.latitude, pengaduan.longitude);
       });
     }
   }
@@ -114,22 +114,22 @@ class _EditKulinerState extends State<EditKuliner> {
 
   //---------- UPDATE PENGADUAN ---------
 
-  Future<void> _updateKuliner() async {
+  Future<void> _updatePengaduan() async {
     if (_formKey.currentState?.validate() == true) {
       DateTime now = DateTime.now();
 
-      var kuliner = Kuliner(
-        id: _idKuliner,
-        nama: _nama.text,
+      var pengaduan = Pengaduan(
+        id: _idPengaduan,
+        judul: _judul.text,
         deskripsi: _deskripsi.text,
         alamat: _alamat!,
         latitude: _selectedLocation?.latitude ?? 0.0,
         longitude: _selectedLocation?.longitude ?? 0.0,
-        gambar: _image != null && _image!.path != widget.kuliner.gambar
+        gambar: _image != null && _image!.path != widget.pengaduan.gambar
             ? _image!.path
             : '',
         kategori: selectedKategori!,
-        createdAt: widget.kuliner.createdAt,
+        createdAt: widget.pengaduan.createdAt,
         updatedAt: now,
         namaPembuat: '',
         profileImagePembuat: '',
@@ -137,9 +137,9 @@ class _EditKulinerState extends State<EditKuliner> {
         tanggapan: '',
       );
 
-      var result = await KulinerController().updateKuliner(
-        kuliner,
-        _image != null && _image!.path != widget.kuliner.gambar ? _image : null,
+      var result = await PengaduanController().updatePengaduan(
+        pengaduan,
+        _image != null && _image!.path != widget.pengaduan.gambar ? _image : null,
       );
 
       if (result['success']) {
@@ -188,7 +188,7 @@ class _EditKulinerState extends State<EditKuliner> {
               Stack(
                 children: [
                   Hero(
-                    tag: 'unique_tag_2_${widget.kuliner.id}',
+                    tag: 'unique_tag_2_${widget.pengaduan.id}',
                     child: ClipPath(
                       clipper: BottomHalfCircleClipper(),
                       child: Container(
@@ -204,7 +204,7 @@ class _EditKulinerState extends State<EditKuliner> {
                           ),
                         ),
                         child: Image.network(
-                          widget.kuliner.gambar,
+                          widget.pengaduan.gambar,
                           height: 500,
                           width: double.infinity,
                           fit: BoxFit.cover,
@@ -248,7 +248,7 @@ class _EditKulinerState extends State<EditKuliner> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => DetailView(
-                                  kuliner: widget.kuliner,
+                                  pengaduan: widget.pengaduan,
                                 ),
                               ),
                             );
@@ -289,7 +289,7 @@ class _EditKulinerState extends State<EditKuliner> {
                     ),
                     SizedBox(height: 16),
 
-                    // ----------- TEXTFIELD NAMA ----------------
+                    // ----------- TEXTFIELD JUDUL ----------------
 
                     Material(
                       elevation: 5,
@@ -300,7 +300,7 @@ class _EditKulinerState extends State<EditKuliner> {
                         alignment: Alignment.centerLeft,
                         child: TextFormField(
                           decoration: InputDecoration(
-                            labelText: "Nama",
+                            labelText: "Judul",
                             labelStyle: GoogleFonts.roboto(
                               fontSize: 15,
                               fontWeight: FontWeight.w400,
@@ -308,7 +308,7 @@ class _EditKulinerState extends State<EditKuliner> {
                             ),
                             contentPadding: EdgeInsets.symmetric(
                                 horizontal: 30, vertical: 20),
-                            hintText: "Masukkan Nama",
+                            hintText: "Masukkan Judul",
                             hintStyle: TextStyle(fontSize: 13),
                             filled: true,
                             fillColor:
@@ -318,7 +318,7 @@ class _EditKulinerState extends State<EditKuliner> {
                               // borderSide: BorderSide.none,
                             ),
                           ),
-                          controller: _nama,
+                          controller: _judul,
                           style: GoogleFonts.roboto(
                             fontSize: 13,
                             color: Color.fromARGB(255, 66, 66, 66),
@@ -634,7 +634,7 @@ class _EditKulinerState extends State<EditKuliner> {
                                 borderRadius: BorderRadius.circular(50),
                                 child: InkWell(
                                   borderRadius: BorderRadius.circular(50),
-                                  onTap: _updateKuliner,
+                                  onTap: _updatePengaduan,
                                   child: Ink(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(50),

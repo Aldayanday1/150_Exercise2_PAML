@@ -1,6 +1,6 @@
-class KulinerDaily {
+class PengaduanDaily {
   final String day; // Hari dalam seminggu
-  final int count; // Jumlah kuliner
+  final int count; // Jumlah pengaduan
 
-  KulinerDaily({required this.day, required this.count});
+  PengaduanDaily({required this.day, required this.count});
 }

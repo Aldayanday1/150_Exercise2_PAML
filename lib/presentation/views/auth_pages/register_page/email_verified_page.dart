@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/login_user_page/login_page.dart';
 import 'dart:async';
+
+import 'package:sistem_pengaduan/presentation/views/auth_pages/login_user_page/login_page.dart';
 
 class EmailVerifiedPage extends StatefulWidget {
   @override

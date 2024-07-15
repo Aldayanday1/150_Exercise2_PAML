@@ -4,22 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:kulinerjogja/presentation/controllers/kuliner_controller.dart';
-import 'package:kulinerjogja/domain/model/kuliner.dart';
-import 'package:kulinerjogja/presentation/views/home_page/home_screen.dart';
-import 'package:kulinerjogja/presentation/views/map_page/map_screen.dart';
-import 'package:kulinerjogja/presentation/views/form_kuliner_page/widgets/radio_button.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/login_user_page/login_page.dart';
-import 'package:kulinerjogja/presentation/views/map_page/map_static_form.dart';
+import 'package:sistem_pengaduan/domain/model/pengaduan.dart';
+import 'package:sistem_pengaduan/presentation/controllers/pengaduan_controller.dart';
+import 'package:sistem_pengaduan/presentation/views/auth_pages/login_user_page/login_page.dart';
+import 'package:sistem_pengaduan/presentation/views/form_pengaduan_page/widgets/radio_button.dart';
+import 'package:sistem_pengaduan/presentation/views/home_page/home_screen.dart';
+import 'package:sistem_pengaduan/presentation/views/map_page/map_screen.dart';
+import 'package:sistem_pengaduan/presentation/views/map_page/map_static_form.dart';
 
-class FormKuliner extends StatefulWidget {
-  const FormKuliner({Key? key}) : super(key: key);
+class FormPengaduan extends StatefulWidget {
+  const FormPengaduan({Key? key}) : super(key: key);
 
   @override
-  State<FormKuliner> createState() => _FormKulinerState();
+  State<FormPengaduan> createState() => _FormPengaduanState();
 }
 
-class _FormKulinerState extends State<FormKuliner> {
+class _FormPengaduanState extends State<FormPengaduan> {
   // -------- IMAGE PICKER --------
 
   File? _image;
@@ -83,19 +83,19 @@ class _FormKulinerState extends State<FormKuliner> {
     );
   }
 
-  // ----------- ADD KULINER -------------
+  // ----------- ADD PENGADUAN -------------
 
   final _formKey = GlobalKey<FormState>();
 
-  final int _idKuliner = 0;
-  final _nama = TextEditingController();
+  final int _idPengaduan = 0;
+  final _judul = TextEditingController();
   final _deskripsi = TextEditingController();
   Kategori? selectedKategori;
 
-  Future<void> _addKuliner() async {
+  Future<void> _addPengaduan() async {
     List<String> missingData = [];
 
-    if (_nama.text.isEmpty &&
+    if (_judul.text.isEmpty &&
         _deskripsi.text.isEmpty &&
         _alamat == null &&
         selectedKategori == null &&
@@ -106,8 +106,8 @@ class _FormKulinerState extends State<FormKuliner> {
         ),
       );
     } else {
-      if (_nama.text.isEmpty) {
-        missingData.add('Nama');
+      if (_judul.text.isEmpty) {
+        missingData.add('Judul');
       }
       if (_deskripsi.text.isEmpty) {
         missingData.add('Deskripsi');
@@ -130,10 +130,10 @@ class _FormKulinerState extends State<FormKuliner> {
         );
       } else {
         DateTime now = DateTime.now();
-        var result = await KulinerController().addKuliner(
-          Kuliner(
-            id: _idKuliner,
-            nama: _nama.text,
+        var result = await PengaduanController().addPengaduan(
+          Pengaduan(
+            id: _idPengaduan,
+            judul: _judul.text,
             alamat: _alamat!,
             gambar: _image?.path ?? '',
             deskripsi: _deskripsi.text,
@@ -151,7 +151,7 @@ class _FormKulinerState extends State<FormKuliner> {
         );
 
         if (result['success']) {
-          _nama.clear();
+          _judul.clear();
           _deskripsi.clear();
           setState(() {
             _image = null;
@@ -197,7 +197,7 @@ class _FormKulinerState extends State<FormKuliner> {
     return Scaffold(
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
         appBar: AppBar(
-          title: Text("Form Kuliner", style: GoogleFonts.openSans()),
+          title: Text("Form Pengaduan", style: GoogleFonts.openSans()),
           centerTitle: true,
         ),
         body: SingleChildScrollView(
@@ -231,7 +231,7 @@ class _FormKulinerState extends State<FormKuliner> {
               ),
               SizedBox(height: 16),
 
-              // ----------- TEXTFIELD NAMA ----------------
+              // ----------- TEXTFIELD JUDUL ----------------
 
               Material(
                 elevation: 5,
@@ -242,7 +242,7 @@ class _FormKulinerState extends State<FormKuliner> {
                   alignment: Alignment.centerLeft,
                   child: TextFormField(
                     decoration: InputDecoration(
-                      labelText: "Nama",
+                      labelText: "Judul",
                       labelStyle: GoogleFonts.roboto(
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
@@ -250,7 +250,7 @@ class _FormKulinerState extends State<FormKuliner> {
                       ),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-                      hintText: "Masukkan Nama",
+                      hintText: "Masukkan Judul",
                       hintStyle: TextStyle(fontSize: 13),
                       filled: true,
                       fillColor: Colors.white.withOpacity(0.7), // Efek kaca
@@ -259,7 +259,7 @@ class _FormKulinerState extends State<FormKuliner> {
                         // borderSide: BorderSide.none,
                       ),
                     ),
-                    controller: _nama,
+                    controller: _judul,
                     style: GoogleFonts.roboto(
                       fontSize: 13,
                       color: Color.fromARGB(255, 66, 66, 66),
@@ -335,16 +335,68 @@ class _FormKulinerState extends State<FormKuliner> {
                   ],
                 ),
               ),
-              RadioButton(
-                selectedKategori: selectedKategori,
-                onKategoriSelected: (Kategori? value) {
-                  setState(() {
-                    selectedKategori = value;
-                  });
-                },
+
+              // ---------------- DROPDOWN NEW REVISION ----------------
+
+              SizedBox(height: 16),
+
+              Center(
+                child: Container(
+                  width: double.infinity, // Membuat lebar penuh
+                  margin: EdgeInsets.symmetric(
+                      horizontal: 20), // Memberikan margin horizontal
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.blueGrey[700]!),
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.white,
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<Kategori>(
+                      isExpanded:
+                          true, // Membuat dropdown mengikuti lebar kontainer
+                      hint: Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text(
+                          "Pilih Kategori", // Teks placeholder
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.blueGrey[700],
+                          ),
+                        ),
+                      ),
+                      value: selectedKategori,
+                      icon: Icon(Icons.arrow_drop_down,
+                          color: Colors.blueGrey[700]),
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.blueGrey[700],
+                      ),
+                      onChanged: (Kategori? newValue) {
+                        setState(() {
+                          selectedKategori = newValue;
+                        });
+                      },
+                      items: Kategori.values
+                          .map<DropdownMenuItem<Kategori>>((Kategori value) {
+                        return DropdownMenuItem<Kategori>(
+                          value: value,
+                          child: Text(
+                            value.toString().split('.').last,
+                            style: TextStyle(color: Colors.blueGrey[700]),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
               ),
 
-              // ----------- MAPS ----------------
+              // ---------------- MAPS ----------------
 
               Padding(
                 padding: const EdgeInsets.only(left: 20.0, bottom: 16, top: 40),
@@ -586,7 +638,7 @@ class _FormKulinerState extends State<FormKuliner> {
                         borderRadius: BorderRadius.circular(50),
                         child: InkWell(
                           borderRadius: BorderRadius.circular(50),
-                          onTap: _addKuliner,
+                          onTap: _addPengaduan,
                           child: Ink(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(50),

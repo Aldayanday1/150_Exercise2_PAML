@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kulinerjogja/domain/model/user_profile.dart';
-import 'package:kulinerjogja/presentation/controllers/kuliner_controller.dart';
-import 'package:kulinerjogja/domain/model/kuliner.dart';
-import 'package:kulinerjogja/presentation/controllers/user_controller.dart';
-import 'package:kulinerjogja/presentation/views/auth_pages/login_user_page/login_page.dart';
-import 'package:kulinerjogja/presentation/views/home_page/widgets/card_category_widget.dart';
-import 'package:kulinerjogja/presentation/views/home_page/widgets/card_kuliner.dart';
-import 'package:kulinerjogja/presentation/views/home_page/widgets/card_slider_widget.dart';
-import 'package:kulinerjogja/presentation/views/home_page/widgets/floating_button.dart';
-import 'package:kulinerjogja/presentation/views/search_page/widgets/search_widget.dart';
-import 'package:kulinerjogja/presentation/views/user_profile.dart/user_profile_screen.dart';
+import 'package:sistem_pengaduan/domain/model/pengaduan.dart';
+import 'package:sistem_pengaduan/domain/model/user_profile.dart';
+import 'package:sistem_pengaduan/presentation/controllers/pengaduan_controller.dart';
+import 'package:sistem_pengaduan/presentation/controllers/user_controller.dart';
+import 'package:sistem_pengaduan/presentation/views/auth_pages/login_user_page/login_page.dart';
+import 'package:sistem_pengaduan/presentation/views/home_page/widgets/card_category_widget.dart';
+import 'package:sistem_pengaduan/presentation/views/home_page/widgets/card_pengaduan.dart';
+import 'package:sistem_pengaduan/presentation/views/home_page/widgets/card_slider_widget.dart';
+import 'package:sistem_pengaduan/presentation/views/home_page/widgets/floating_button.dart';
+import 'package:sistem_pengaduan/presentation/views/search_page/widgets/search_widget.dart';
+import 'package:sistem_pengaduan/presentation/views/user_profile.dart/user_profile_screen.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -29,27 +29,27 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
-    // get all kuliner
-    _loadAllKuliner();
+    // get all pengaduan
+    _loadAllPengaduan();
     // get user Profile
     _userProfileFuture = _usercontroller.getUserProfile();
   }
 
   Future<void> _refreshData() async {
-    await _loadAllKuliner();
+    await _loadAllPengaduan();
     setState(() {
       _userProfileFuture = _usercontroller.getUserProfile();
     });
   }
 
   // --------------------------- LOAD ALL DATA ---------------------------
-  List<Kuliner>? _allKuliner;
+  List<Pengaduan>? _allPengaduan;
 
-  final KulinerController _controller = KulinerController();
+  final PengaduanController _controller = PengaduanController();
 
-  Future<void> _loadAllKuliner() async {
-    _allKuliner = await _controller.getAllKuliner();
-    print('Total kuliner: ${_allKuliner?.length ?? 0}');
+  Future<void> _loadAllPengaduan() async {
+    _allPengaduan = await _controller.getAllPengaduan();
+    print('Total pengaduan: ${_allPengaduan?.length ?? 0}');
     setState(() {});
   }
 
@@ -57,14 +57,14 @@ class _HomeViewState extends State<HomeView> {
 
   String _selectedCategory = "";
 
-  Future<List<Kuliner>> _getFutureByCategory() async {
+  Future<List<Pengaduan>> _getFutureByCategory() async {
     if (_selectedCategory.isEmpty) {
-      return _allKuliner ?? [];
+      return _allPengaduan ?? [];
     }
     Kategori selectedKategori =
         Kategori.fromString(_selectedCategory.toUpperCase());
-    return _allKuliner
-            ?.where((kuliner) => kuliner.kategori == selectedKategori)
+    return _allPengaduan
+            ?.where((pengaduan) => pengaduan.kategori == selectedKategori)
             .toList() ??
         [];
   }
@@ -264,7 +264,7 @@ class _HomeViewState extends State<HomeView> {
 
                       // ---------------------- SLIDE CARDS ----------------------
 
-                      AutoSlideCards(kulinerList: _allKuliner ?? []),
+                      AutoSlideCards(pengaduanList: _allPengaduan ?? []),
 
                       // ------------------- SELECTED CARD ROW -------------------
 
@@ -287,7 +287,7 @@ class _HomeViewState extends State<HomeView> {
                           ),
                         ),
                       ),
-                      FutureBuilder<List<Kuliner>>(
+                      FutureBuilder<List<Pengaduan>>(
                         future: _getFutureByCategory(),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
@@ -323,8 +323,8 @@ class _HomeViewState extends State<HomeView> {
                                 padding: EdgeInsets.only(top: 10),
                                 itemCount: snapshot.data?.length ?? 0,
                                 itemBuilder: (context, index) {
-                                  Kuliner kuliner = snapshot.data![index];
-                                  return buildKulinerCard(context, kuliner);
+                                  Pengaduan pengaduan = snapshot.data![index];
+                                  return buildPengaduanCard(context, pengaduan);
                                 },
                               ),
                             );

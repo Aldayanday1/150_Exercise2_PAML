@@ -1,9 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:kulinerjogja/domain/model/status_laporan.dart';
-import 'package:kulinerjogja/domain/model/user.dart';
-import 'package:kulinerjogja/domain/model/user_profile.dart';
+import 'package:sistem_pengaduan/domain/model/status_laporan.dart';
+import 'package:sistem_pengaduan/domain/model/user.dart';
+import 'package:sistem_pengaduan/domain/model/user_profile.dart';
 
 class ApiService {
   static const String baseUrl = "http://192.168.56.1:8080/api/users";
@@ -221,7 +222,7 @@ class ApiService {
   // ------------------- UPDATE STATUS LAPORAN (ADMIN) -------------------
 
   Future<void> updateStatusLaporan(
-      int kulinerId, StatusLaporan statusLaporan) async {
+      int pengaduanId, StatusLaporan statusLaporan) async {
     try {
       // Mengambil token dari secure storage
       final token = await secureStorage.read(key: 'jwt_token');
@@ -234,7 +235,7 @@ class ApiService {
 
       // Lanjutkan permintaan HTTP dengan token yang valid
       final response = await http.put(
-        Uri.parse('$baseUrl/update-status/$kulinerId'),
+        Uri.parse('$baseUrl/update-status/$pengaduanId'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -254,6 +255,33 @@ class ApiService {
     } catch (e) {
       print('Gagal memperbarui status laporan: $e');
       throw Exception('Gagal memperbarui status laporan: $e');
+    }
+  }
+
+  // ------------ UPLOAD IMAGE (ADMIN) -----------------
+
+  Future<String> uploadImage(int pengaduanId, File imageFile) async {
+    try {
+      final token = await secureStorage.read(key: 'jwt_token');
+      if (token == null || token.isEmpty) {
+        throw Exception('Token tidak ditemukan di secure storage');
+      }
+
+      final uri = Uri.parse('$baseUrl/upload-image/$pengaduanId');
+      var request = http.MultipartRequest('POST', uri)
+        ..headers['Authorization'] = 'Bearer $token'
+        ..files.add(await http.MultipartFile.fromPath('file', imageFile.path));
+
+      var response = await request.send();
+      if (response.statusCode == 200) {
+        var responseData = await response.stream.toBytes();
+        var responseString = String.fromCharCodes(responseData);
+        return responseString;
+      } else {
+        throw Exception('Gagal mengunggah gambar: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Gagal mengunggah gambar: $e');
     }
   }
 

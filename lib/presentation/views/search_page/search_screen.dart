@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import 'package:kulinerjogja/data/services/kuliner_service.dart';
-import 'package:kulinerjogja/domain/model/kuliner.dart';
-import 'package:kulinerjogja/presentation/views/detail_page/detail_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sistem_pengaduan/data/services/pengaduan_service.dart';
+import 'package:sistem_pengaduan/domain/model/pengaduan.dart';
+import 'package:sistem_pengaduan/presentation/views/detail_page/detail_screen.dart';
 
 class SearchPage extends StatefulWidget {
-  final KulinerService kulinerService;
+  final PengaduanService pengaduanService;
 
-  SearchPage({required this.kulinerService});
+  SearchPage({required this.pengaduanService});
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -17,8 +17,8 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
-  List<Kuliner> _searchResult = [];
-  List<Kuliner> _searchHistory = [];
+  List<Pengaduan> _searchResult = [];
+  List<Pengaduan> _searchHistory = [];
 
   // keyboard akan muncul secara otomatis saat halaman dimuat
   FocusNode _searchFocusNode = FocusNode();
@@ -43,13 +43,13 @@ class _SearchPageState extends State<SearchPage> {
     if (historyJson != null) {
       setState(() {
         _searchHistory = (jsonDecode(historyJson) as List)
-            .map((item) => Kuliner.fromJson(item))
+            .map((item) => Pengaduan.fromJson(item))
             .toList();
       });
     }
   }
 
-  void _saveSearchHistory(List<Kuliner> searchHistory) async {
+  void _saveSearchHistory(List<Pengaduan> searchHistory) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final historyJson =
         jsonEncode(searchHistory.map((item) => item.toJson()).toList());
@@ -142,27 +142,27 @@ class _SearchPageState extends State<SearchPage> {
                 ? ListView.builder(
                     itemCount: _searchResult.length,
                     itemBuilder: (context, index) {
-                      Kuliner kuliner = _searchResult[index];
+                      Pengaduan pengaduan = _searchResult[index];
                       return InkWell(
                         onTap: () {
-                          _addToSearchHistory(kuliner);
-                          _navigateToDetailPage(kuliner);
+                          _addToSearchHistory(pengaduan);
+                          _navigateToDetailPage(pengaduan);
                         },
                         child: ListTile(
                           title: Text(
-                            kuliner.nama,
+                            pengaduan.judul,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                           subtitle: Text(
-                            kuliner.alamat,
+                            pengaduan.alamat,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                           leading: ClipRRect(
                             borderRadius: BorderRadius.circular(100),
                             child: Image.network(
-                              kuliner.gambar,
+                              pengaduan.gambar,
                               width: 50.0,
                               height: 50.0,
                               fit: BoxFit.cover,
@@ -216,8 +216,8 @@ class _SearchPageState extends State<SearchPage> {
       ),
       ..._searchHistory
           .map(
-            (kuliner) => Dismissible(
-              key: Key(kuliner.id.toString()),
+            (pengaduan) => Dismissible(
+              key: Key(pengaduan.id.toString()),
               background: Container(
                 color: const Color.fromARGB(255, 196, 196, 196),
                 alignment: Alignment.centerRight,
@@ -234,29 +234,29 @@ class _SearchPageState extends State<SearchPage> {
               },
               onDismissed: (direction) {
                 setState(() {
-                  _searchHistory.removeWhere((item) => item.id == kuliner.id);
+                  _searchHistory.removeWhere((item) => item.id == pengaduan.id);
                   _saveSearchHistory(_searchHistory);
                 });
               },
               child: InkWell(
                 onTap: () {
-                  _navigateToDetailPage(kuliner);
+                  _navigateToDetailPage(pengaduan);
                 },
                 child: ListTile(
                   title: Text(
-                    kuliner.nama,
+                    pengaduan.judul,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   subtitle: Text(
-                    kuliner.alamat,
+                    pengaduan.alamat,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   leading: ClipRRect(
                     borderRadius: BorderRadius.circular(100),
                     child: Image.network(
-                      kuliner.gambar,
+                      pengaduan.gambar,
                       width: 50.0,
                       height: 50.0,
                       fit: BoxFit.cover,
@@ -272,7 +272,7 @@ class _SearchPageState extends State<SearchPage> {
 
   void _performSearch(String query) async {
     if (query.isNotEmpty) {
-      _searchKuliner(query);
+      _searchPengaduan(query);
     } else {
       setState(() {
         _searchResult.clear();
@@ -280,32 +280,32 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  Future<void> _searchKuliner(String query) async {
+  Future<void> _searchPengaduan(String query) async {
     try {
-      List<Kuliner> kulinerData =
-          await widget.kulinerService.searchKuliner(query);
+      List<Pengaduan> pengaduanData =
+          await widget.pengaduanService.searchPengaduan(query);
       setState(() {
-        _searchResult = kulinerData;
+        _searchResult = pengaduanData;
       });
     } catch (e) {
-      print('Failed to search kuliner');
+      print('Failed to search pengaduan');
     }
   }
 
-  void _addToSearchHistory(Kuliner kuliner) {
+  void _addToSearchHistory(Pengaduan pengaduan) {
     setState(() {
-      _searchHistory.removeWhere((item) => item.id == kuliner.id);
-      _searchHistory.insert(0, kuliner);
+      _searchHistory.removeWhere((item) => item.id == pengaduan.id);
+      _searchHistory.insert(0, pengaduan);
       _saveSearchHistory(_searchHistory);
     });
   }
 
-  void _navigateToDetailPage(Kuliner kuliner) async {
+  void _navigateToDetailPage(Pengaduan pengaduan) async {
     await Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => DetailView(
-                kuliner: kuliner,
+                pengaduan: pengaduan,
               )),
     );
   }

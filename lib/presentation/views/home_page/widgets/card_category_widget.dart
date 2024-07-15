@@ -26,6 +26,7 @@ class _ThreeCardsRowState extends State<ThreeCardsRow> {
     } else {
       widget.onCategoryTap(category);
       _lastSelectedCategory = category;
+      
     }
   }
 
@@ -37,30 +38,30 @@ class _ThreeCardsRowState extends State<ThreeCardsRow> {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            buildCard("Infrastruktur", widget.selectedCategory == "Makanan",
-                () => _handleCardTap("Makanan")),
-            buildCard("Lingkungan", widget.selectedCategory == "Minuman",
-                () => _handleCardTap("Minuman")),
-            buildCard("Transportasi", widget.selectedCategory == "Kue",
-                () => _handleCardTap("Kue")),
             buildCard(
-                "Keamanan dan Ketertiban",
-                widget.selectedCategory == "Dessert",
-                () => _handleCardTap("Dessert")),
-            buildCard("Kesehatan", widget.selectedCategory == "Snack",
-                () => _handleCardTap("Snack")),
-            buildCard("Pendidikan", widget.selectedCategory == "Bread",
-                () => _handleCardTap("Bread")),
-            buildCard("Sosial", widget.selectedCategory == "Tea",
-                () => _handleCardTap("Tea")),
+                "Infrastruktur",
+                widget.selectedCategory == "Infrastruktur",
+                () => _handleCardTap("Infrastruktur")),
+            buildCard("Lingkungan", widget.selectedCategory == "Lingkungan",
+                () => _handleCardTap("Lingkungan")),
+            buildCard("Transportasi", widget.selectedCategory == "Transportasi",
+                () => _handleCardTap("Transportasi")),
+            buildCard("Keamanan", widget.selectedCategory == "Keamanan",
+                () => _handleCardTap("Keamanan")),
+            buildCard("Kesehatan", widget.selectedCategory == "Kesehatan",
+                () => _handleCardTap("Kesehatan")),
+            buildCard("Pendidikan", widget.selectedCategory == "Pendidikan",
+                () => _handleCardTap("Pendidikan")),
+            buildCard("Sosial", widget.selectedCategory == "Sosial",
+                () => _handleCardTap("Sosial")),
             buildCard(
                 "Perizinan dan Regulasi",
-                widget.selectedCategory == "Coffee",
-                () => _handleCardTap("Coffee")),
-            buildCard("Birokrasi", widget.selectedCategory == "Milk",
-                () => _handleCardTap("Milk")),
-            buildCard("Lainnya", widget.selectedCategory == "Juice",
-                () => _handleCardTap("Juice")),
+                widget.selectedCategory == "Izin",
+                () => _handleCardTap("Izin")),
+            buildCard("Birokrasi", widget.selectedCategory == "Birokrasi",
+                () => _handleCardTap("Birokrasi")),
+            buildCard("Lainnya", widget.selectedCategory == "Lainnya",
+                () => _handleCardTap("Lainnya")),
           ],
         ),
       ),

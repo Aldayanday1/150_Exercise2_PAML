@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:kulinerjogja/domain/model/kuliner.dart';
-import 'package:kulinerjogja/presentation/views/detail_page/detail_screen.dart';
+import 'package:sistem_pengaduan/domain/model/pengaduan.dart';
+import 'package:sistem_pengaduan/presentation/views/detail_page/detail_screen.dart';
 
 class AutoSlideCards extends StatefulWidget {
-  final List<Kuliner> kulinerList;
+  final List<Pengaduan> pengaduanList;
 
-  AutoSlideCards({required this.kulinerList});
+  AutoSlideCards({required this.pengaduanList});
 
   @override
   _AutoSlideCardsState createState() => _AutoSlideCardsState();
@@ -24,7 +24,7 @@ class _AutoSlideCardsState extends State<AutoSlideCards> {
 
     _timer = Timer.periodic(Duration(seconds: 3), (timer) {
       // Jika halaman saat ini belum mencapai halaman terakhir, geser ke halaman berikutnya
-      if (_currentPage < widget.kulinerList.length - 1) {
+      if (_currentPage < widget.pengaduanList.length - 1) {
         _currentPage++;
       } else {
         // Jika halaman saat ini adalah halaman terakhir, kembali ke halaman pertama
@@ -61,7 +61,7 @@ class _AutoSlideCardsState extends State<AutoSlideCards> {
             height: MediaQuery.of(context).size.height / 2.1,
             child: PageView.builder(
               controller: _pageController,
-              itemCount: widget.kulinerList.length,
+              itemCount: widget.pengaduanList.length,
               itemBuilder: (context, index) {
                 return AnimatedBuilder(
                   animation: _pageController,
@@ -79,7 +79,7 @@ class _AutoSlideCardsState extends State<AutoSlideCards> {
                       ),
                     );
                   },
-                  child: buildCard(widget.kulinerList[index]),
+                  child: buildCard(widget.pengaduanList[index]),
                 );
               },
             ),
@@ -91,13 +91,13 @@ class _AutoSlideCardsState extends State<AutoSlideCards> {
     );
   }
 
-  Widget buildCard(Kuliner kuliner) {
+  Widget buildCard(Pengaduan pengaduan) {
     return InkWell(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DetailView(kuliner: kuliner),
+            builder: (context) => DetailView(pengaduan: pengaduan),
           ),
         );
       },
@@ -119,7 +119,7 @@ class _AutoSlideCardsState extends State<AutoSlideCards> {
           child: Stack(
             children: [
               Image.network(
-                kuliner.gambar,
+                pengaduan.gambar,
                 fit: BoxFit.cover,
                 width: double.infinity,
                 height: double.infinity,
@@ -147,7 +147,7 @@ class _AutoSlideCardsState extends State<AutoSlideCards> {
                         width: double
                             .infinity, // Make sure the text takes up the full width
                         child: Text(
-                          kuliner.nama,
+                          pengaduan.judul,
                           style: TextStyle(
                             fontSize: 23,
                             color: Colors.white,
@@ -178,7 +178,7 @@ class _AutoSlideCardsState extends State<AutoSlideCards> {
                           SizedBox(width: 4),
                           Expanded(
                             child: Text(
-                              kuliner.alamat,
+                              pengaduan.alamat,
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.white,
@@ -210,7 +210,7 @@ class _AutoSlideCardsState extends State<AutoSlideCards> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(
-        widget.kulinerList.length,
+        widget.pengaduanList.length,
         (index) => Container(
           width: 7.0,
           height: 7.0,

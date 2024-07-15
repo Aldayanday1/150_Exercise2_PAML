@@ -1,17 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:kulinerjogja/domain/model/kuliner.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kulinerjogja/presentation/views/map_page/map_static_detail.dart';
+import 'package:sistem_pengaduan/domain/model/pengaduan.dart';
+import 'package:sistem_pengaduan/presentation/views/map_page/map_static_detail.dart';
 
 class DetailView extends StatefulWidget {
-  final Kuliner kuliner;
+  final Pengaduan pengaduan;
   final bool isNew;
 
   const DetailView({
     Key? key,
-    required this.kuliner,
+    required this.pengaduan,
     this.isNew = true,
   }) : super(key: key);
 
@@ -25,7 +25,7 @@ class _DetailViewState extends State<DetailView> {
     // ----------- STATUS COLOR TEXT -----------
 
     Color statusColor;
-    String statusText = widget.kuliner.status ?? 'Pending';
+    String statusText = widget.pengaduan.status ?? 'Pending';
 
     switch (statusText.toUpperCase()) {
       case 'PROGRESS':
@@ -51,7 +51,7 @@ class _DetailViewState extends State<DetailView> {
               children: [
                 // ----------- BACKGROUND IMAGE -----------
                 Hero(
-                  tag: 'unique_tag_1${widget.kuliner.id}',
+                  tag: 'unique_tag_1${widget.pengaduan.id}',
                   child: ClipPath(
                     clipper: BottomHalfCircleClipper(),
                     child: Container(
@@ -67,7 +67,7 @@ class _DetailViewState extends State<DetailView> {
                         ),
                       ),
                       child: Image.network(
-                        widget.kuliner.gambar,
+                        widget.pengaduan.gambar,
                         height: 500,
                         width: double.infinity,
                         fit: BoxFit.cover,
@@ -125,7 +125,7 @@ class _DetailViewState extends State<DetailView> {
                 children: [
                   // ----------- TITLE -----------
                   Text(
-                    widget.kuliner.nama,
+                    widget.pengaduan.judul,
                     style: GoogleFonts.roboto(
                       fontSize: 25.0,
                       color: Color.fromARGB(255, 66, 66, 66),
@@ -158,7 +158,7 @@ class _DetailViewState extends State<DetailView> {
                     ),
                   ),
                   Text(
-                    widget.kuliner.deskripsi,
+                    widget.pengaduan.deskripsi,
                     style: GoogleFonts.roboto(
                       fontSize: 14.0,
                       color: Color.fromARGB(255, 66, 66, 66),
@@ -166,7 +166,7 @@ class _DetailViewState extends State<DetailView> {
                   ),
                   SizedBox(height: 30),
                   // Text(
-                  //   'Kategori : ${widget.kuliner.kategoriString}',
+                  //   'Kategori : ${widget.pengaduan.kategoriString}',
                   //   style: GoogleFonts.roboto(
                   //     fontSize: 14.0,
                   //     color: Color.fromARGB(255, 66, 66, 66),
@@ -191,7 +191,7 @@ class _DetailViewState extends State<DetailView> {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 4.5),
                           child: Text(
-                            widget.kuliner.alamat,
+                            widget.pengaduan.alamat,
                             style: GoogleFonts.roboto(
                               fontSize: 14.0,
                               color: Color.fromARGB(255, 66, 66, 66),
@@ -213,7 +213,7 @@ class _DetailViewState extends State<DetailView> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(25),
                         child: Image.network(
-                          widget.kuliner.profileImagePembuat,
+                          widget.pengaduan.profileImagePembuat,
                           width: 16,
                           height: 16,
                           fit: BoxFit.cover,
@@ -221,7 +221,7 @@ class _DetailViewState extends State<DetailView> {
                       ),
                       SizedBox(width: 8),
                       Text(
-                        'Dibuat oleh : ${widget.kuliner.namaPembuat}',
+                        'Dibuat oleh : ${widget.pengaduan.namaPembuat}',
                         style: GoogleFonts.roboto(
                           fontSize: 14,
                           color: Color.fromARGB(255, 66, 66, 66),
@@ -236,7 +236,7 @@ class _DetailViewState extends State<DetailView> {
                   Padding(
                     padding: const EdgeInsets.only(left: 2.0, top: 18),
                     child: Text(
-                      widget.kuliner.dateMessage,
+                      widget.pengaduan.dateMessage,
                       style: GoogleFonts.roboto(
                         fontSize: 14,
                         color: Color.fromARGB(255, 66, 66, 66),
@@ -263,8 +263,8 @@ class _DetailViewState extends State<DetailView> {
                     child: Container(
                       height: 220,
                       child: StaticMap(
-                        location: LatLng(
-                            widget.kuliner.latitude, widget.kuliner.longitude),
+                        location: LatLng(widget.pengaduan.latitude,
+                            widget.pengaduan.longitude),
                         // onLocationChanged: (ltlng, strng) {},
                       ),
                     ),
@@ -308,7 +308,7 @@ class _DetailViewState extends State<DetailView> {
               padding: EdgeInsets.only(left: 40, top: 0, right: 40, bottom: 50),
               child: Column(
                 children: [
-                  if (widget.kuliner.tanggapan != null)
+                  if (widget.pengaduan.tanggapan != null)
                     Container(
                       width: double.infinity,
                       child: Column(
@@ -383,7 +383,7 @@ class _DetailViewState extends State<DetailView> {
                                             ),
                                             SizedBox(height: 5),
                                             Text(
-                                              widget.kuliner.tanggapan!,
+                                              widget.pengaduan.tanggapan!,
                                               style: GoogleFonts.roboto(
                                                 fontSize: 12,
                                                 color: Color.fromARGB(
